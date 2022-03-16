@@ -1,6 +1,6 @@
 # Software Tutorials - Group Project
 <pre>
-Our project is a web application that allows users to 
+Our project is a mobile application that allows users to 
       1. look for tutorials
       2. create tutorials and projects
       2. enroll for their favorite tutorial
@@ -16,6 +16,8 @@ In this project we have three types of users
 	2. Instructors
 	3. Admins
 </pre>
+
+## User Stories
 
 
 ## Business features in addition to authentication and authorization
@@ -34,13 +36,36 @@ In this project we have three types of users
            Name                      ID                 Section
 
 </pre>
+
+
+## Security Features
+
+| Role  	| Can do 							    |
+| ------------- | ----------------------------------------------------------------- |
+| Instructor    | Create Tutorial  						    |
+|               | View Tutorial  						    |
+|               | Update Tutorial  						    |
+|               | Delete Tutorial  						    |
+|										    |
+| Client        | Enroll for Tutorial  						    |
+|               | UnEnroll for Tutorial  					    |
+|               | ReEnroll for Tutorial  					    |
+|               | Submit the project for the tutorials they enrolled in  	    |
+|               | View the project submited for the tutorials they enrolled in      |
+|               | Update the project submited for the tutorials they enrolled in    |
+|               | Delete the project submited for the tutorials they enrolled in    |
+|										    |
+| Admin         | Delete any Tutorial  						    |
+|               | View Tutorial  						    |
+
+
  
 ## Technologies Used
 
 <pre>
 	1. Spring Boot - Java
 	2. MySQL database as a backend
-  3. Flutter - Dart
+  	3. Flutter - Dart
 </pre>
 
 
