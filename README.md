@@ -82,9 +82,9 @@ In this project we have three types of users
       
 ## Group Members
 
-           Name                      ID                 Section
-	1. Abraham Shimekt    UGR/0129/12                  1
-	2. Bamlaku Hiruy      UGR/4774/12                  3
-	3. Bisrat Walle       UGR/4425/12                  3
-	4. Haile Dereje	      UGR/2190/12 		   3
-	5. Ysihak Bazezew     UGR/1131/12		   3 
+           Name                 ID         	     Section
+	1. Abraham Shimekt    	UGR/0129/12		1
+	2. Bamlaku Hiruy      	UGR/4774/12		3
+	3. Bisrat Walle       	UGR/4425/12		3
+	4. Haile Dereje	      	UGR/2190/12		3
+	5. Ysihak Bazezew     	UGR/1131/12		3
