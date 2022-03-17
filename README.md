@@ -10,32 +10,41 @@ Our project is a mobile application that allows users to
 
 ## User Types
 
-<pre>
 In this project we have three types of users
+
 	1. Clients
 	2. Instructors
 	3. Admins
-</pre>
+
 
 ## User Stories
 
+    1. As Instructor, I want to create tutorials together with a project
+    2. As Instructor, I want to edit my tutorials
+    3. As Instructor, I want to delete my tutorials
+    4. As Instructor, I want to view my tutorials as well as others
+    5. As Client, I want to enroll for my favorite tutorial
+    6. As Client, I want to unenroll for enrolled tutorial
+    7. As Client, I want to submit project for my enrolled tutorial
+    8. As Client, I want to edit my submitted tutorial
+    9. As Client, I want to delete my submitted tutorial
+    10. As Admin, I want to delete inappropriate tutorial
+    11. As Admin, I want to manage clients and instructors
 
-## Business features in addition to authentication and authorization
 
-<pre>
-    1. Tutorial Enrollement for Clients - CRUD operations (Enroll(POST), UnEnroll(DELETE), ViewTutorial(GET)), REENROLL(PUT)
-    2. Tutorial Creation for Instructors - CRUD operations (Create(POST), ViewTutorial(GET))
-    3. Project Submission - CRUD operations (SubmitProject(POST),  ViewProject(GET))
-    4. Project Creation for Instructors -  CRUD operations (CreateProject(POST), ViewProject(GET), 
+
+## Business features in addition to Authentication and Authorization
+
+    1. Tutorial Creation for Instructors - CRUD operations (CreateTutorial(POST), ViewTutorial(GET), 
+    			EditTutoiral(PUT), DeleteTutorial(DELETE))
+    2. Project Submission - CRUD operations (SubmitProject(POST),  ViewSubmittedProject(GET), 
+    			EditSubmittedProject(PUT), DeleteSubmittedProject(DELETE))
+    3. Project Creation for Instructors -  CRUD operations (CreateProject(POST), ViewProject(GET), 
                         UpdateProject (PUT), DeleteProject(DELETE))
-</pre>
-      
-## Group Members
+    4. Tutorial Enrollement for Clients - CRUD operations (Enroll(POST), UnEnroll(DELETE), 
+    			ViewEnrolledTutorial(GET)), REENROLL(PUT))
 
-<pre>
-           Name                      ID                 Section
 
-</pre>
 
 
 ## Security Features
@@ -62,10 +71,13 @@ In this project we have three types of users
  
 ## Technologies Used
 
-<pre>
 	1. Spring Boot - Java
 	2. MySQL database as a backend
   	3. Flutter - Dart
-</pre>
 
 
+      
+## Group Members
+
+           Name                      ID                 Section
+	1.
