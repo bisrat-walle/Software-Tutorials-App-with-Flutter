@@ -20,17 +20,17 @@ In this project we have three types of users
 
 ## User Stories
 
-    1. As Instructor, I want to create tutorials together with a project
-    2. As Instructor, I want to edit my tutorials
-    3. As Instructor, I want to delete my tutorials
-    4. As Instructor, I want to view my tutorials as well as others
-    5. As Client, I want to enroll for my favorite tutorial
-    6. As Client, I want to unenroll for enrolled tutorial
-    7. As Client, I want to submit project for my enrolled tutorial
-    8. As Client, I want to edit my submitted project
-    9. As Client, I want to delete my submitted project
-    10. As Admin, I want to delete inappropriate tutorial
-    11. As Admin, I want to manage clients and instructors
+    1. As Instructor, I want to create tutorials together with a project so that my clients can use them
+    2. As Instructor, I want to edit my tutorials so that my clients can have better exprience
+    3. As Instructor, I want to delete my tutorials so that my clients will not be exposed to old and inappropriate tutorials
+    4. As Instructor, I want to view my tutorials as well as others so that I will see how many tutorials are avaliable
+    5. As Client, I want to enroll for my favorite tutorial so that I will follow the tutorial
+    6. As Client, I want to unenroll for enrolled tutorial so that I won't follow tutorials which are not interesting
+    7. As Client, I want to submit project for my enrolled tutorial so that I will wrap-up the tutorial
+    8. As Client, I want to edit my submitted project so that I will improve my submission
+    9. As Client, I want to delete my submitted project so that I will re-submit it with another project
+    10. As Admin, I want to delete inappropriate tutorial so that users can have better experience
+    11. As Admin, I want to manage clients and instructors so that the system will be robust
 
 
 
