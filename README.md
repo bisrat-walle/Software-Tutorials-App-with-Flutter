@@ -27,8 +27,8 @@ In this project we have three types of users
     5. As Client, I want to enroll for my favorite tutorial
     6. As Client, I want to unenroll for enrolled tutorial
     7. As Client, I want to submit project for my enrolled tutorial
-    8. As Client, I want to edit my submitted tutorial
-    9. As Client, I want to delete my submitted tutorial
+    8. As Client, I want to edit my submitted project
+    9. As Client, I want to delete my submitted project
     10. As Admin, I want to delete inappropriate tutorial
     11. As Admin, I want to manage clients and instructors
 
@@ -67,7 +67,7 @@ In this project we have three types of users
 |										    |
 | Admin         | Delete any Tutorial  						    |
 |               | View Tutorial  						    |
-|               | Manage Instructors and Clients  						    |
+|               | Manage Instructors and Clients  				    |
 
 
  
@@ -83,4 +83,8 @@ In this project we have three types of users
 ## Group Members
 
            Name                      ID                 Section
-	1.
+	1. Abraham Shimekt    UGR/0129/12                  1
+	2. Bamlaku Hiruy      UGR/4774/12                  3
+	3. Bisrat Walle       UGR/4425/12                  3
+	4. Haile Dereje	      UGR/2190/12 		   3
+	5. Ysihak Bazezew     UGR/1131/12		   3 
