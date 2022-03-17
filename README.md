@@ -67,14 +67,16 @@ In this project we have three types of users
 |										    |
 | Admin         | Delete any Tutorial  						    |
 |               | View Tutorial  						    |
+|               | Manage Instructors and Clients  						    |
 
 
  
 ## Technologies Used
-
-	1. Spring Boot - Java
-	2. MySQL database as a backend
-  	3. Flutter - Dart
+	
+	
+  	1. Flutter - Dart for UI
+	2. Spring Boot - Java for RESTful API
+	3. MySQL database as a backend
 
 
       
