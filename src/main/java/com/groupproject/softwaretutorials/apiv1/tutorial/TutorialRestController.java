@@ -1,0 +1,164 @@
+package com.groupproject.softwaretu.apiv1.tutorial;
+
+import com.groupproject.softwaretu.tutorial.TutorialRepository;
+import com.groupproject.softwaretu.tutorial.TutorialService;
+import com.groupproject.softwaretu.tutorial.Tutorial;
+
+import java.time.LocalDateTime;
+
+import com.groupproject.softwaretu.enrollement.Enrollement;
+import com.groupproject.softwaretu.enrollement.EnrollementRepository;
+import com.groupproject.softwaretu.project.ProjectRepository;
+import com.groupproject.softwaretu.security.User;
+import com.groupproject.softwaretu.security.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import java.util.ArrayList;
+import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.slf4j.Slf4j;
+import com.groupproject.softwaretu.enrollement.EnrollementService;
+import com.groupproject.softwaretu.security.UserService;
+import com.groupproject.softwaretu.project.Project;
+
+@RestController
+@RequestMapping(path="api/v1/tutorials", produces="application/json")
+@CrossOrigin(origins = "*")
+@Slf4j
+public class TutorialRestController {
+    
+    
+    @Autowired
+    private TutorialRepository tutorialRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EnrollementRepository enrollementRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private TutorialService tutorialService;
+    
+    @Autowired 
+    private EnrollementService enrollementService;
+    
+    @Autowired
+    private UserService userService;
+
+    
+    @GetMapping("/all")
+    public ResponseEntity<Iterable<Tutorial>> getAllTutorials(){
+        return new ResponseEntity<>(tutorialRepository.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/instructor")
+    public ResponseEntity<Iterable<TutorialRepresentationInstructor>> getAllTutorialsInst(){
+        ArrayList<TutorialRepresentationInstructor> tutorialReps = new ArrayList<>();
+        Iterable<Tutorial> tutorials = tutorialRepository.findAll();
+        log.info("All tutorials extracted " + tutorials);
+        for (Tutorial tutorial: tutorials){
+            log.info("Tutorial being processed " + tutorial);
+            tutorialReps.add(new TutorialRepresentationInstructor(tutorial, enrollementService));
+        }
+        return new ResponseEntity<>(tutorialReps, HttpStatus.OK);
+    }
+    
+    @GetMapping("/all/client")
+    public ResponseEntity<Iterable<TutorialRepresentationClient>> getAllTutorialsClient(){
+        ArrayList<TutorialRepresentationClient> tutorialReps = new ArrayList<>(); 
+        
+        Iterable<Tutorial> tutorials = tutorialRepository.findAll();
+        for (Tutorial tutorial: tutorials){
+            tutorialReps.add(new TutorialRepresentationClient(tutorial, enrollementService));
+        }
+        return new ResponseEntity<>(tutorialReps, HttpStatus.OK);
+    }
+
+    @GetMapping("/enrolled")
+    public ResponseEntity<Iterable<Tutorial>> getEnrolledTutorials(){
+        User user = userService.getAuthenticatedUser();
+        return new ResponseEntity<>(
+            enrollementRepository.getEnrolledTutorials(user), HttpStatus.OK);
+    }
+
+    @GetMapping("/mytutorials")
+    public ResponseEntity<Iterable<Tutorial>> getMyTutorials(){
+        User user = userService.getAuthenticatedUser();
+        return new ResponseEntity<>(
+            tutorialRepository.getInstructorTutorials(user), HttpStatus.OK);
+    }
+
+    @PostMapping(path="/", consumes="application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Tutorial createTutorial(@RequestBody Tutorial tutorial){
+        Project project = projectRepository.save(tutorial.getProject());
+        User user = userService.getAuthenticatedUser();
+        tutorial.setInstructor(user);
+        tutorial.setProject(project);
+        return tutorialRepository.save(tutorial);
+    }
+
+
+    @PutMapping(path="/{tutorialId}", consumes="application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public Tutorial updateTutorial(@PathVariable ("tutorialId") Long tutorialId,
+        @RequestBody Tutorial tutorial
+    ){
+        if (tutorial.getProject() != null){
+            projectRepository.save(tutorial.getProject());
+        }
+        tutorial.setTutorialId(tutorialId);
+        return tutorialRepository.save(tutorial);
+    }
+
+    @PatchMapping(path="/{tutorialId}", consumes="application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public Tutorial partialUpdateTutorial(@PathVariable ("tutorialId") Long tutorialId,
+        @RequestBody Tutorial patch
+    )
+    {
+        Tutorial tutorial = tutorialRepository.findByTutorialId(tutorialId);
+        if (patch.getTitle() != null){
+            tutorial.setTitle(patch.getTitle());
+        }
+        if (patch.getContent() != null){
+            tutorial.setTitle(patch.getTitle());
+        }
+        if (tutorial.getProject() != null){
+            projectRepository.save(tutorial.getProject());
+        }
+        return tutorialRepository.save(tutorial);
+    }
+
+    @DeleteMapping(path="/{tutorialId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTutorial(@PathVariable ("tutorialId") Long tutorialId){
+        tutorialService.deleteTutorialCascadeProject(tutorialId);
+    }
+
+
+    @GetMapping("/{tutorialId}")
+    public ResponseEntity<Tutorial> getTutorialDetailsById(@PathVariable("tutorialId") Long tutorialId){
+        return new ResponseEntity<>(tutorialRepository.findByTutorialId(tutorialId), HttpStatus.OK);
+    }
+    
+
+}
