@@ -1,10 +1,10 @@
-package com.groupproject.softwaretutorials;
+package com.groupproject.softwaretu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SoftwaretutorialsApplication {
+public class SoftwaretuApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SoftwaretutorialsApplication.class, args);
