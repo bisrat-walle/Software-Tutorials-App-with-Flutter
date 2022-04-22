@@ -36,12 +36,12 @@ In this project we have three types of users
 
 ## Business features in addition to Authentication and Authorization
 
-    1. Tutorial Creation for Instructors - CRUD operations (CreateTutorial(POST), ViewTutorial(GET), 
-    			EditTutoiral(PUT), DeleteTutorial(DELETE))
+    1. Tutorial Creation for Instructors - CRUD operations (CreateTutorial(POST), 
+		ViewTutorial(GET),  EditTutoiral(PUT), DeleteTutorial(DELETE))
     2. Project Submission - CRUD operations (SubmitProject(POST),  ViewSubmittedProject(GET), 
     			EditSubmittedProject(PUT), DeleteSubmittedProject(DELETE))
-    3. Project Creation for Instructors -  CRUD operations (CreateProject(POST), ViewProject(GET), 
-                        UpdateProject (PUT), DeleteProject(DELETE))
+    3. Project Creation for Instructors -  CRUD operations (CreateProject(POST), 
+		ViewProject(GET),  UpdateProject (PUT), DeleteProject(DELETE))
     4. Tutorial Enrollement for Clients - CRUD operations (Enroll(POST), UnEnroll(DELETE), 
     			ViewEnrolledTutorial(GET)), REENROLL(PUT))
 
@@ -57,12 +57,11 @@ In this project we have three types of users
 
 <pre>
 
-	1.	This RESTful API has its own documentation based on swagger 2 (Open API Specification). The
-		documentation can be accessed by going to the route "/swagger" after running the project.
-
+	1.	This RESTful API has its own documentation based on swagger 2 (Open API Specification). 
+		The documentation can be accessed by going to the route "/swagger" after running the 
+		project.
 
 	2.	Since Admins cannot signup for the system,
-
 		we have used CommandLine runner to create an admin with 
 
 			1. Username - admin
