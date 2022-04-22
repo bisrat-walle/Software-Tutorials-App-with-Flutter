@@ -1,8 +1,10 @@
-package com.groupproject.softwaretutorials.project;
+package com.groupproject.softwaretu.project;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Data;
 import java.io.Serializable;
 

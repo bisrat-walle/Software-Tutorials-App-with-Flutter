@@ -31,6 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.groupproject.softwaretu.enrollement.EnrollementService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping(path="api/v1/tutorials", produces="application/json")
 @CrossOrigin(origins="*")
@@ -52,6 +55,7 @@ public class EnrollementRestController {
     private UserService userService;
     
     @PostMapping("/{tutorialId}/enroll")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void enroll( 
                         @PathVariable("tutorialId") Long tutorialId
@@ -71,6 +75,7 @@ public class EnrollementRestController {
     }
 
     @DeleteMapping("/enrolled/{tutorialId}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unenrollTutorial(@PathVariable ("tutorialId") Long tutorialId){
         Tutorial tutorial = tutorialRepository.findByTutorialId(tutorialId);

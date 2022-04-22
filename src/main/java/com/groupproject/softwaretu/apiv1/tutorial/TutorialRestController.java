@@ -35,6 +35,9 @@ import com.groupproject.softwaretu.enrollement.EnrollementService;
 import com.groupproject.softwaretu.security.UserService;
 import com.groupproject.softwaretu.project.Project;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping(path="api/v1/tutorials", produces="application/json")
 @CrossOrigin(origins = "*")
@@ -65,11 +68,14 @@ public class TutorialRestController {
 
     
     @GetMapping("/all")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Iterable<Tutorial>> getAllTutorials(){
         return new ResponseEntity<>(tutorialRepository.findAll(), HttpStatus.OK);
     }
-
-    @GetMapping("/all/instructor")
+    
+    
+    @GetMapping("/all/i")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Iterable<TutorialRepresentationInstructor>> getAllTutorialsInst(){
         ArrayList<TutorialRepresentationInstructor> tutorialReps = new ArrayList<>();
         Iterable<Tutorial> tutorials = tutorialRepository.findAll();
@@ -81,7 +87,9 @@ public class TutorialRestController {
         return new ResponseEntity<>(tutorialReps, HttpStatus.OK);
     }
     
-    @GetMapping("/all/client")
+    
+    @GetMapping("/all/c")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Iterable<TutorialRepresentationClient>> getAllTutorialsClient(){
         ArrayList<TutorialRepresentationClient> tutorialReps = new ArrayList<>(); 
         
@@ -93,6 +101,7 @@ public class TutorialRestController {
     }
 
     @GetMapping("/enrolled")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Iterable<Tutorial>> getEnrolledTutorials(){
         User user = userService.getAuthenticatedUser();
         return new ResponseEntity<>(
@@ -100,6 +109,7 @@ public class TutorialRestController {
     }
 
     @GetMapping("/mytutorials")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Iterable<Tutorial>> getMyTutorials(){
         User user = userService.getAuthenticatedUser();
         return new ResponseEntity<>(
@@ -107,6 +117,7 @@ public class TutorialRestController {
     }
 
     @PostMapping(path="/", consumes="application/json")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.CREATED)
     public Tutorial createTutorial(@RequestBody Tutorial tutorial){
         Project project = projectRepository.save(tutorial.getProject());
@@ -118,6 +129,7 @@ public class TutorialRestController {
 
 
     @PutMapping(path="/{tutorialId}", consumes="application/json")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.OK)
     public Tutorial updateTutorial(@PathVariable ("tutorialId") Long tutorialId,
         @RequestBody Tutorial tutorial
@@ -130,6 +142,7 @@ public class TutorialRestController {
     }
 
     @PatchMapping(path="/{tutorialId}", consumes="application/json")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.OK)
     public Tutorial partialUpdateTutorial(@PathVariable ("tutorialId") Long tutorialId,
         @RequestBody Tutorial patch
@@ -149,6 +162,7 @@ public class TutorialRestController {
     }
 
     @DeleteMapping(path="/{tutorialId}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTutorial(@PathVariable ("tutorialId") Long tutorialId){
         tutorialService.deleteTutorialCascadeProject(tutorialId);
@@ -156,6 +170,7 @@ public class TutorialRestController {
 
 
     @GetMapping("/{tutorialId}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Tutorial> getTutorialDetailsById(@PathVariable("tutorialId") Long tutorialId){
         return new ResponseEntity<>(tutorialRepository.findByTutorialId(tutorialId), HttpStatus.OK);
     }
