@@ -73,21 +73,6 @@ public class TutorialRestController {
         return new ResponseEntity<>(tutorialRepository.findAll(), HttpStatus.OK);
     }
     
-    
-    @GetMapping("/all/i")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    public ResponseEntity<Iterable<TutorialRepresentationInstructor>> getAllTutorialsInst(){
-        ArrayList<TutorialRepresentationInstructor> tutorialReps = new ArrayList<>();
-        Iterable<Tutorial> tutorials = tutorialRepository.findAll();
-        log.info("All tutorials extracted " + tutorials);
-        for (Tutorial tutorial: tutorials){
-            log.info("Tutorial being processed " + tutorial);
-            tutorialReps.add(new TutorialRepresentationInstructor(tutorial, enrollementService));
-        }
-        return new ResponseEntity<>(tutorialReps, HttpStatus.OK);
-    }
-    
-    
     @GetMapping("/all/c")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<Iterable<TutorialRepresentationClient>> getAllTutorialsClient(){
