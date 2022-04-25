@@ -1,4 +1,4 @@
-package com.groupproject.softwaretutorials.apiv1.project;
+package com.groupproject.softwaretu.apiv1.project;
 
 import com.groupproject.softwaretutorials.tutorial.TutorialRepository;
 import com.groupproject.softwaretutorials.tutorial.TutorialService;
