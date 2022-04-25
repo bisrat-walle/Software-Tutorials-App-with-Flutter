@@ -1,4 +1,4 @@
-package com.groupproject.softwaretutorials.project;
+package com.groupproject.softwaretu.project;
 
 import org.springframework.data.repository.CrudRepository;
 
