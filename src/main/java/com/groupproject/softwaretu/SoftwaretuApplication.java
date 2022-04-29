@@ -2,6 +2,7 @@ package com.groupproject.softwaretu;
 
 import java.beans.Encoder;
 
+import com.groupproject.softwaretu.security.RegistrationForm;
 import com.groupproject.softwaretu.security.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,6 +31,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin(origins="*")
 public class SoftwaretuApplication {
 
+	@Autowired
+	PasswordEncoder passwordEncoder;
+
+	@Autowired
+	UserRepository userRepository;
 	public static void main(String[] args) {
 		SpringApplication.run(SoftwaretuApplication.class, args);
 	}
@@ -44,15 +52,20 @@ public class SoftwaretuApplication {
 	@Bean
 	public CommandLineRunner dataLoader(UserRepository repo) {
 		return args -> {
-
+			if (userRepository.findByUsername("admin") == null){
+				User user = new User();
+				user.setPassword("admin");
+				user.setUsername("admin");
+				user.setFullName("Admin");
+				user.setEmail("admin@admin.com");
+				user.setRole("ADMIN");
+				RegistrationForm form = new RegistrationForm();
+				userRepository.save(form.getUser(user, passwordEncoder));
+			}
 		};
 	}
-	
-	@Bean
-    public PasswordEncoder bcryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-	
+
+
 	@Bean
     UserDetailsService userDetailsService(UserRepository userRepo){
         return username -> {
