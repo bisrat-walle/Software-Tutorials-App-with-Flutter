@@ -20,10 +20,12 @@ public class UserService {
     }
     
     public boolean isUsernameExist(String username){
-        return userRepository.findByUsername(username) != null;
+		User user = userRepository.findByUsername(username);
+        return user != null && user != getAuthenticatedUser();
     }
     
     public boolean isEmailExist(String email){
-        return userRepository.findByEmail(email) != null;
+		User user = userRepository.findByEmail(email);
+        return user != null && user != getAuthenticatedUser();
     }
 }
