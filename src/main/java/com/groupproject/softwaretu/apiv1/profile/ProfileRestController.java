@@ -1,25 +1,18 @@
 package com.groupproject.softwaretu.apiv1.profile;
 
+import com.groupproject.softwaretu.security.RegistrationForm;
 import com.groupproject.softwaretu.security.User;
 import com.groupproject.softwaretu.security.UserRepository;
-import com.groupproject.softwaretu.security.RegistrationForm;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import com.groupproject.softwaretu.security.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import lombok.extern.slf4j.Slf4j;
-import com.groupproject.softwaretu.security.UserService;
-import org.springframework.http.HttpHeaders;
-
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="api/v1", produces="application/json")
@@ -57,7 +50,7 @@ public class ProfileRestController {
 			userRepository.save(form.getUser(user, passwordEncoder)), HttpStatus.CREATED);
     }
 	
-	@PutMapping("/profile/")
+	@PutMapping("/profile")
 	@Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<User> updateProfile(@RequestBody ProfileUpdate newUser){
 		
