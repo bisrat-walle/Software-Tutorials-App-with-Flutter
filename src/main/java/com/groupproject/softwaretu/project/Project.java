@@ -14,6 +14,12 @@ import javax.persistence.GenerationType;
 @Entity
 @Data
 public class Project implements Serializable{
+	public Project(){}
+	public Project(Long projectId, String title, String problemStatement){
+		this.projectId = projectId;
+		this.title= title;
+		this.problemStatement = problemStatement;
+	}
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long projectId;
