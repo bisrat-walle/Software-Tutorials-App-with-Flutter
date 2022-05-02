@@ -45,6 +45,7 @@ import com.groupproject.softwaretu.security.UserService;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @WebMvcTest(TutorialRestController.class)
 public class TutorialRestControllerTest {
@@ -74,6 +75,9 @@ public class TutorialRestControllerTest {
     
 	@MockBean
 	UserService userService;
+	
+	@MockBean
+	PasswordEncoder passwordEncoder;
     
     @Test
 	public void getAllTutorials() throws Exception {

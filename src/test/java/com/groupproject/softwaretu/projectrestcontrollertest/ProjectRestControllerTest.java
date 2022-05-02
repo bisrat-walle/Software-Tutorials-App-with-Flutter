@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @WebMvcTest(ProjectRestController.class)
 public class ProjectRestControllerTest {
@@ -59,6 +60,9 @@ public class ProjectRestControllerTest {
     
 	@MockBean
 	UserService userService;
+	
+	@MockBean
+	PasswordEncoder passwordEncoder;
 	
 	@Test
 	public void submitProject() throws Exception {

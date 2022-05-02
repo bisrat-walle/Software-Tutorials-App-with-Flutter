@@ -52,6 +52,7 @@ import com.groupproject.softwaretu.profilerestcontrollertest.MockUserGenerator;
 import com.groupproject.softwaretu.enrollementrestcontrollertest.MockEnrollementGenerator;
 import com.groupproject.softwaretu.projectrestcontrollertest.MockProjectSubmissionGenerator;
 import com.groupproject.softwaretu.security.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @WebMvcTest(EnrollementRestController.class)
 public class EnrollementRestControllerTest {
@@ -81,6 +82,9 @@ public class EnrollementRestControllerTest {
     
 	@MockBean
 	UserService userService;
+	
+	@MockBean
+	PasswordEncoder passwordEncoder;
 	
 	@Test
 	public void enroll() throws Exception {
