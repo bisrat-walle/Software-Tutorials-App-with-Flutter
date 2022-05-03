@@ -46,4 +46,8 @@ public class EnrollementService {
         User instructor = userService.getAuthenticatedUser();
         return tutorialRepository.getInstructor(tutorial).equals(instructor);
     }
+	
+	public int getEnrollementCount(Tutorial tutorial){
+		return enrollementRepository.getEnrollementFromTutorial(tutorial).size();
+	}
 }
