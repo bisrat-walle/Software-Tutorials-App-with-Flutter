@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/api/v1/users", "/api/v1/users/*", "/api/v1/users/**").hasRole("ADMIN")
             .antMatchers("/api/v1/tutorials/enrolled/**", "/api/v1/tutorials/enrolled/*").hasRole("CLIENT")
             .antMatchers("/api/v1/tutorials/enroll/**", "/api/v1/tutorials/enroll/*").hasRole("CLIENT")
-            .antMatchers("/api/v1/tutorials/mytutorials/**", "/api/v1/tutorials/mytutorials/*").hasRole("INSTRUCTOR")
+            .antMatchers("/api/v1/tutorials/mytutorials/**", "/api/v1/tutorials/mytutorials/*").hasAnyRole("INSTRUCTOR", "ADMIN")
             .antMatchers("/api/v1/login", "/api/v1/register").permitAll()
             .antMatchers("/api/v1/**").authenticated()
             .antMatchers("/*", "/**").permitAll();
