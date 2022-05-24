@@ -87,18 +87,30 @@ public class TutorialRestController {
 
     @GetMapping("/enrolled")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    public ResponseEntity<Iterable<Tutorial>> getEnrolledTutorials(){
+    public ResponseEntity<Iterable<TutorialRepresentationClient>> getEnrolledTutorials(){
         User user = userService.getAuthenticatedUser();
-        return new ResponseEntity<>(
-            enrollementRepository.getEnrolledTutorials(user), HttpStatus.OK);
+		
+		ArrayList<TutorialRepresentationClient> tutorialReps = new ArrayList<>(); 
+        
+        Iterable<Tutorial> tutorials = enrollementRepository.getEnrolledTutorials(user);
+        for (Tutorial tutorial: tutorials){
+            tutorialReps.add(new TutorialRepresentationClient(tutorial, enrollementService));
+        }
+        return new ResponseEntity<>(tutorialReps, HttpStatus.OK);
     }
 
     @GetMapping("/mytutorials")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    public ResponseEntity<Iterable<Tutorial>> getMyTutorials(){
+    public ResponseEntity<Iterable<TutorialRepresentationClient>> getMyTutorials(){
         User user = userService.getAuthenticatedUser();
-        return new ResponseEntity<>(
-            tutorialRepository.getInstructorTutorials(user), HttpStatus.OK);
+		
+		ArrayList<TutorialRepresentationClient> tutorialReps = new ArrayList<>(); 
+        
+        Iterable<Tutorial> tutorials = tutorialRepository.getInstructorTutorials(user);
+        for (Tutorial tutorial: tutorials){
+            tutorialReps.add(new TutorialRepresentationClient(tutorial, enrollementService));
+        }
+        return new ResponseEntity<>(tutorialReps, HttpStatus.OK);
     }
 
     @PostMapping(path="/", consumes="application/json")
