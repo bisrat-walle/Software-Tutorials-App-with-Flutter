@@ -150,7 +150,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                           }
                                         },
                                       )),
-                                  
+                                  Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+
+                                    Text("Not registered yet?"),
+                                    TextButton(
+                                      child: Text("Create Account"),
+                                      onPressed: () {
+                                        context.go("/signup");
+                                      },
+                                    ),
+                                  ]),
                                 ],
                               ),
                             )
