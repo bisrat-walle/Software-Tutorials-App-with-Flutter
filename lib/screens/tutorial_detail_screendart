@@ -17,3 +17,73 @@ class TutorialDetailScreen extends StatefulWidget {
   State<TutorialDetailScreen> createState() => _TutorialDetailScreenState();
 }
 
+class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
+  late final _projectLinkController;
+  late bool _fieldDisabled;
+  late SharedPreferences? prefs;
+  late bool? isClient;
+  late String? username;
+  @override
+  void initState() {
+    _projectLinkController = TextEditingController();
+    if (widget.tutorial.submittedLink != null)
+      _projectLinkController.text = widget.tutorial.submittedLink;
+    _fieldDisabled = widget.tutorial.submittedLink != null;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _projectLinkController.dispose();
+    super.dispose();
+  }
+
+  Widget getButtons() {
+    if (_fieldDisabled == true) {
+      return Row(
+        children: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _fieldDisabled = false;
+                });
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Colors.blue,
+              )),
+          SizedBox(
+            width: 10,
+          ),
+          IconButton(
+              onPressed: () {
+                ProjectService.deleteProject(
+                    tutorialId: widget.tutorial!.tutorialId);
+              },
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              )),
+        ],
+      );
+    }
+    return ElevatedButton(
+      child: FittedBox(
+        child: Text("Update"),
+      ),
+      onPressed: () async {
+        if (widget._formKey.currentState!.validate()) {
+          final res = await ProjectService.updateProject(
+              tutorialId: widget.tutorial.tutorialId,
+              projectUrl: _projectLinkController.text);
+          print(res);
+        }
+      },
+      style: ElevatedButton.styleFrom(
+          primary: Colors.blue,
+          textStyle: TextStyle(color: Colors.white),
+          splashFactory: InkSplash.splashFactory),
+    );
+  }
+
+}
