@@ -21,3 +21,27 @@ class SplashScreen extends StatefulWidget {
 }
 
 
+class _SplashScreenState extends State<SplashScreen> {
+  
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<AppStateManager>(context, listen: false).initializeApp();
+  }
+ 
+ 
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+		child: Scaffold(
+      body: Container(
+		color: Colors.purple,
+		child: Center(
+            child: SvgPicture.asset("assets/images/splash.svg",),
+          
+        ),
+	  ),
+    ),
+	);
+  }
+}
