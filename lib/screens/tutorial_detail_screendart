@@ -1,0 +1,19 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:softwaretutorials/api/project_service.dart';
+import 'package:softwaretutorials/api/tutorial_service.dart';
+import '../components/components.dart';
+import 'package:softwaretutorials/models/models.dart';
+
+class TutorialDetailScreen extends StatefulWidget {
+  final tutorial;
+  final _formKey = GlobalKey<FormState>();
+ 
+  
+  TutorialDetailScreen({Key? key, required this.tutorial}) : super(key: key);
+
+  @override
+  State<TutorialDetailScreen> createState() => _TutorialDetailScreenState();
+}
+
