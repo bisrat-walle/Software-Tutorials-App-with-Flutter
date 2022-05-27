@@ -27,5 +27,19 @@ class EnrollementService{
 			return "Unable to enroll";
 		}
 	}
+  static Future<String?> unenroll({required int tutorialId}) async {
+		try{
+			final response = await client.delete(
+					Uri.parse(_baseUrl+"enrolled/"+tutorialId.toString())
+			);
+
+			if (response.statusCode == 204) {
+				return "Course successfully unenrolled";
+			}
+		} catch(e){
+			print(e);
+			return "Unable to unenroll";
+		}
+	}
 
 }
