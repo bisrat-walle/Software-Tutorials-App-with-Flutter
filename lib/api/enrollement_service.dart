@@ -27,7 +27,8 @@ class EnrollementService{
 			return "Unable to enroll";
 		}
 	}
-  static Future<String?> unenroll({required int tutorialId}) async {
+
+	static Future<String?> unenroll({required int tutorialId}) async {
 		try{
 			final response = await client.delete(
 					Uri.parse(_baseUrl+"enrolled/"+tutorialId.toString())
