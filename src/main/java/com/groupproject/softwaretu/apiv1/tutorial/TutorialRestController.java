@@ -131,31 +131,13 @@ public class TutorialRestController {
     public Tutorial updateTutorial(@PathVariable ("tutorialId") Long tutorialId,
         @RequestBody Tutorial tutorial
     ){
-        if (tutorial.getProject() != null){
-            projectRepository.save(tutorial.getProject());
-        }
-        tutorial.setTutorialId(tutorialId);
-        return tutorialRepository.save(tutorial);
-    }
-
-    @PatchMapping(path="/{tutorialId}", consumes="application/json")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    @ResponseStatus(HttpStatus.OK)
-    public Tutorial partialUpdateTutorial(@PathVariable ("tutorialId") Long tutorialId,
-        @RequestBody Tutorial patch
-    )
-    {
-        Tutorial tutorial = tutorialRepository.findByTutorialId(tutorialId);
-        if (patch.getTitle() != null){
-            tutorial.setTitle(patch.getTitle());
-        }
-        if (patch.getContent() != null){
-            tutorial.setTitle(patch.getTitle());
-        }
-        if (tutorial.getProject() != null){
-            projectRepository.save(tutorial.getProject());
-        }
-        return tutorialRepository.save(tutorial);
+        Tutorial oldTutorial = tutorialRepository.findByTutorialId(tutorialId);
+        oldTutorial.getProject().setTitle(tutorial.getProject().getTitle());
+        oldTutorial.getProject().setProblemStatement(tutorial.getProject().getProblemStatement());
+        projectRepository.save(oldTutorial.getProject());
+        oldTutorial.setTitle(tutorial.getTitle());
+        oldTutorial.setContent(tutorial.getContent());
+        return tutorialRepository.save(oldTutorial);
     }
 
     @DeleteMapping(path="/{tutorialId}")
