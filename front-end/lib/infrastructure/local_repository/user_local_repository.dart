@@ -13,4 +13,16 @@ class UserLocalRepository {
     return result;
   }
 
+  //Get All Users
+  //Searches if query string was passed
+  Future<List<User>> getAllUsers() async {
+    final db = await dbProvider.database;
+
+    final result = await db.query(userTable);
+    List<User> users = result.isNotEmpty
+        ? result.map((item) => User.fromJson(item)).toList()
+        : [];
+    return users;
+  }
+
 }
