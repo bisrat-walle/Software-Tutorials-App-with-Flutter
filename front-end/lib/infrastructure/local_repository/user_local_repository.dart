@@ -25,4 +25,21 @@ class UserLocalRepository {
     return users;
   }
 
+  //Update Todo record
+  Future<int> updateTodo(User user) async {
+    final db = await dbProvider.database;
+
+    var result = await db.update(userTable, user.toJson(),
+        where: "id = ?", whereArgs: [user.id]);
+
+    return result;
+  }
+
+  //Delete Todo records
+  Future<int> deleteTodo(int id) async {
+    final db = await dbProvider.database;
+    var result = await db.delete(userTable, where: 'id = ?', whereArgs: [id]);
+
+    return result;
+  }
 }
