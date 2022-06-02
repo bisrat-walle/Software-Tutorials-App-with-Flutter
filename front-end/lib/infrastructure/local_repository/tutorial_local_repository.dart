@@ -13,4 +13,16 @@ class TutorialLocalRepository {
     return result;
   }
 
+  //Get All Tutorial items
+  //Searches if query string was passed
+  Future<List<Tutorial>> getAllTutorials() async {
+    final db = await dbProvider.database;
+
+    final result = await db.query(tutorialTable);
+    List<Tutorial> tutorials = result.isNotEmpty
+        ? result.map((item) => Tutorial.fromJson(item)).toList()
+        : [];
+    return tutorials;
+  }
+
 }
