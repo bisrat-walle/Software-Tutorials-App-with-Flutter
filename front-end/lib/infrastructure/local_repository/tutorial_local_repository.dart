@@ -25,4 +25,21 @@ class TutorialLocalRepository {
     return tutorials;
   }
 
+  //Update Todo record
+  Future<int> updateTutorial(Tutorial tutorial) async {
+    final db = await dbProvider.database;
+
+    var result = await db.update(tutorialTable, tutorial.toJson(),
+        where: "tutorialId = ?", whereArgs: [tutorial.tutorialId]);
+
+    return result;
+  }
+
+  //Delete Todo records
+  Future<int> deleteTutorial(int tutorialId) async {
+    final db = await dbProvider.database;
+    var result = await db.delete(tutorialTable, where: 'tutorialId = ?', whereArgs: [tutorialId]);
+
+    return result;
+  }
 }
