@@ -150,8 +150,8 @@ public class TutorialRestController {
 
     @GetMapping("/{tutorialId}")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
-    public ResponseEntity<Tutorial> getTutorialDetailsById(@PathVariable("tutorialId") Long tutorialId){
-        return new ResponseEntity<>(tutorialRepository.findByTutorialId(tutorialId), HttpStatus.OK);
+    public ResponseEntity<TutorialRepresentationClient> getTutorialDetailsById(@PathVariable("tutorialId") Long tutorialId){
+        return new ResponseEntity<>(new TutorialRepresentationClient(tutorialRepository.findByTutorialId(tutorialId), enrollementService), HttpStatus.OK);
     }
     
 
