@@ -30,7 +30,7 @@ public class Enrollement implements Serializable{
 	
 	
 	
-    @Column(length = 35, nullable = true)
+    @Column(length = 100, nullable = true)
     @Size(min = 5, message  = "problem statement must be at least 5 characters long ")
     private String githubLink;
 }
