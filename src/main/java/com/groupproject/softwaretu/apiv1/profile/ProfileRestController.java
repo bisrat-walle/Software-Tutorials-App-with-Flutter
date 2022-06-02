@@ -50,6 +50,14 @@ public class ProfileRestController {
 			userRepository.save(form.getUser(user, passwordEncoder)), HttpStatus.CREATED);
     }
 	
+	@GetMapping("/profile")
+	@Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    public ResponseEntity<User> getProfile(){
+		
+		User user = userService.getAuthenticatedUser();
+		return new ResponseEntity<>(userRepository.findByUsername(user.getUsername()), HttpStatus.OK);
+	}
+	
 	@PutMapping("/profile")
 	@Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<User> updateProfile(@RequestBody ProfileUpdate newUser){
