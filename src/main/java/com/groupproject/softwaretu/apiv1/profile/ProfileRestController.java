@@ -34,13 +34,13 @@ public class ProfileRestController {
         
 		if (userService.isUsernameExist(user.getUsername())){
 			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.set("error", "Username already taken");
+			user.setFullName("Username already taken");
 			return new ResponseEntity<>(user, responseHeaders, HttpStatus.CONFLICT);
 		}
 		
 		if (userService.isEmailExist(user.getEmail())){
 			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.set("error", "Email already taken");
+			user.setFullName("Email already taken");
 			return new ResponseEntity<>(user, responseHeaders, HttpStatus.CONFLICT);
 		}
 		
@@ -57,13 +57,13 @@ public class ProfileRestController {
 		User user = userService.getAuthenticatedUser();
 		if (userService.isUsernameExist(newUser.username)){
 			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.set("error", "Username already taken");
+			user.setFullName("Username already taken");
 			return new ResponseEntity<>(user, responseHeaders, HttpStatus.BAD_REQUEST);
 		}
 		
 		if (userService.isEmailExist(newUser.email)){
 			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.set("error", "Email already taken");
+			user.setFullName("Email already taken");
 			return new ResponseEntity<>(user, responseHeaders, HttpStatus.BAD_REQUEST);
 		}
 		
