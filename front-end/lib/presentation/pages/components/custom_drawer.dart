@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:softwaretutorials/presentation/core/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
 
 class CustomDrawer{
 	static Drawer get(BuildContext context){
-    final authBloc = BlocProvider.of<AuthenticationBloc>(context);
     return Drawer(
         backgroundColor: Colors.teal,
         child: ListView(
@@ -32,12 +32,15 @@ class CustomDrawer{
                       width: 30,
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
                           height: 30,
                         ),
                         Text("Ethio Software Tutorial"),
-                        Text(authBloc.preferences.get("username").toString())
+                        SizedBox(height: 20,),
+                        Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("username").toString()),
+                        Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("Role").toString(), style: TextStyle(fontSize: 13),)
                       ],
                     )
                   ],
@@ -45,34 +48,30 @@ class CustomDrawer{
               
             ListTile(
                 title: TextButton(
-                  child: Text("Manage Users",
-                      style: TextStyle(color: Colors.black)),
-                  onPressed: () {},
-                ),
-                leading: Icon(Icons.people)),
-            ListTile(
-                title: TextButton(
-                  child: Text("Manage Tutorials",
-                      style: TextStyle(color: Colors.black)),
-                  onPressed: () {},
-                ),
-                leading: Icon(Icons.school)),
-            ListTile(
-                title: TextButton(
-                  child: Text(
-                    "Statistics",
-                    style: TextStyle(color: Colors.black),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Edit Profile",
+                        style: TextStyle(color: Colors.black)),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    BlocProvider.of<NavigationBloc>(context).add(GotoUpdateProfileState());
+                  },
                 ),
-                leading: Icon(Icons.numbers),),
-                ListTile(
-                  title: TextButton(child:Text("Logout"), onPressed: () {
-				
-				authBloc.add(LoggedOut());
-			
-			}),
-                )
+                leading: Icon(Icons.edit)),
+            ListTile(
+                title: TextButton(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Logout",
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                  onPressed: () {
+                    
+				BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+        BlocProvider.of<NavigationBloc>(context).add(GotoSignin());
+                  },
+                ),
+                leading: Icon(Icons.logout)),
           ],
         ),
       );

@@ -10,6 +10,12 @@ String toString() {
   }
 }
 
+class UpdateProfilePage extends NavigationState {
+String toString() {
+    return "Initial state";
+  }
+}
+
 class SplashState extends NavigationState {
 @override
 String toString() {

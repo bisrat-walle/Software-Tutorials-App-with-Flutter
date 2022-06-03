@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:softwaretutorials/domain/models/models.dart';
-import 'package:softwaretutorials/domain/models/tutorial_form_model.dart';
-import 'package:softwaretutorials/infrastructure/repositories/enrollement_service.dart';
-import 'package:softwaretutorials/infrastructure/repositories/tutorial_service.dart';
-import 'package:softwaretutorials/presentation/core/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/domain/tutorials/tutorial.dart';
+import 'package:softwaretutorials/domain/tutorials/tutorial_form_model.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/enrollement_service.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
 import 'package:softwaretutorials/presentation/pages/screens/screens.dart';
 import 'package:provider/provider.dart';
 import 'package:softwaretutorials/presentation/pages/screens/tutorial/bloc/tutorial_bloc.dart';
@@ -92,8 +92,7 @@ class TutorialCard extends StatelessWidget {
                                         if (tutorial.enrolled!) ElevatedButton(
                                           child: FittedBox(child:Text("Unenroll"),),
                                           onPressed: () async {
-                                            final res = await EnrollementService.unenroll(tutorialId: tutorial.tutorialId!);
-                                            print(res);
+                                            tutorialBloc.add(UnEnrollTutorialEvent(tutorial.tutorialId!, tutorialBloc.state.selectedTab));
                                           },
 
                                           style: ElevatedButton.styleFrom(
@@ -107,8 +106,8 @@ class TutorialCard extends StatelessWidget {
                                         if (isClient && !tutorial.enrolled!) ElevatedButton(
                                           child: FittedBox(child:Text("Enroll"),),
                                           onPressed: () async {
-                                            final res = await EnrollementService.enroll(tutorialId: tutorial.tutorialId!);
-                                            print(res);
+                                            tutorialBloc.add(EnrollTutorialEvent(tutorial.tutorialId!, tutorialBloc.state.selectedTab));
+                                            
                                           },
 
                                           style: ElevatedButton.styleFrom(
@@ -158,8 +157,7 @@ class TutorialCard extends StatelessWidget {
                                               ),
                                               IconButton(onPressed: () async {
 
-                                                final res = await TutorialRepository.deleteTutorial(tutorialId: tutorial.tutorialId!);
-                                                print(res);
+                                              tutorialBloc.add(DeleteTutorialEvent(tutorial.tutorialId!, tutorialBloc.state.selectedTab));
                                               }
 
                                                 ,icon: Icon(Icons.delete, color: Colors.red,),)

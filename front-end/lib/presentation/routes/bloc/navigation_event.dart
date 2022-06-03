@@ -8,6 +8,8 @@ class NavigationInitialEvent extends NavigationEvent {}
 
 class GotoSignin extends NavigationEvent {}
 
+class GotoUpdateProfileState extends NavigationEvent {}
+
 class GotoSignup extends NavigationEvent {}
 
 class GotoAllTutorials extends NavigationEvent {}

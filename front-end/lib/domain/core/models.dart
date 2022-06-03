@@ -1,4 +1,4 @@
-export 'project.dart';
-export 'tutorial.dart';
+export '../tutorials/project.dart';
+export '../tutorials/tutorial.dart';
 export 'user.dart';
-export 'tutorial_pages.dart';
+export '../tutorials/tutorial_pages.dart';

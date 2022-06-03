@@ -2,6 +2,8 @@ part of 'tutorial_bloc.dart';
 
 abstract class TutorialState extends Equatable {
 
+  String message = "";
+
   int selectedTab = 0;
 
   TutorialState(this.selectedTab);

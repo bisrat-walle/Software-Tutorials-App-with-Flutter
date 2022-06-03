@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'models.dart';
+import '../core/models.dart';
 
 class Tutorial extends Equatable{
     int? tutorialId;

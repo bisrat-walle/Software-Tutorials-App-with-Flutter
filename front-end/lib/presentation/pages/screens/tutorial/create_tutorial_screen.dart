@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:softwaretutorials/domain/models/models.dart';
-import 'package:softwaretutorials/domain/models/tutorial_form_model.dart';
+import 'package:softwaretutorials/domain/tutorials/tutorial_form_model.dart';
 
 class CreateTutorialScreen extends StatefulWidget {
   

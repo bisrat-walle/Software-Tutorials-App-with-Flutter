@@ -1,247 +1,260 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:softwaretutorials/infrastructure/repositories/project_service.dart';
-import 'package:softwaretutorials/infrastructure/repositories/tutorial_service.dart';
-import 'package:softwaretutorials/presentation/core/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/domain/tutorials/project_form_model.dart';
+import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
+import 'package:softwaretutorials/presentation/pages/screens/project_submission/bloc/project_bloc.dart';
 
 class TutorialDetailScreen extends StatefulWidget {
-  final tutorial;
-  final _formKey = GlobalKey<FormState>();
- 
-  
-  TutorialDetailScreen({Key? key, required this.tutorial}) : super(key: key);
+  final tutorialId;
+
+  TutorialDetailScreen({Key? key, required this.tutorialId}) : super(key: key);
 
   @override
   State<TutorialDetailScreen> createState() => _TutorialDetailScreenState();
 }
 
 class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
-  late final _projectLinkController;
-  late bool _fieldDisabled;
+  late ProjectFormModel _projectForm;
   late SharedPreferences? prefs;
   late bool? isClient;
   late String? username;
+  late ProjectBloc projectBloc;
   @override
   void initState() {
-    _projectLinkController = TextEditingController();
-    if (widget.tutorial.submittedLink != null)
-      _projectLinkController.text = widget.tutorial.submittedLink;
-    _fieldDisabled = widget.tutorial.submittedLink != null;
     super.initState();
   }
 
   @override
   void dispose() {
-    _projectLinkController.dispose();
+    _projectForm.dispose();
     super.dispose();
   }
 
   Widget getButtons() {
-    if (_fieldDisabled == true) {
       return Row(
         children: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  _fieldDisabled = false;
-                });
-              },
-              icon: Icon(
-                Icons.edit,
-                color: Colors.blue,
-              )),
-          SizedBox(
-            width: 10,
-          ),
-          IconButton(
-              onPressed: () {
-                ProjectService.deleteProject(
-                    tutorialId: widget.tutorial!.tutorialId);
-              },
-              icon: Icon(
-                Icons.delete,
-                color: Colors.red,
-              )),
-        ],
-      );
-    }
-    return ElevatedButton(
-      child: FittedBox(
+          ElevatedButton(
+      child: const FittedBox(
         child: Text("Update"),
       ),
       onPressed: () async {
-        if (widget._formKey.currentState!.validate()) {
-          final res = await ProjectService.updateProject(
-              tutorialId: widget.tutorial.tutorialId,
-              projectUrl: _projectLinkController.text);
-          print(res);
+        if (_projectForm.formKey.currentState!.validate()) {
+          projectBloc.add(ProjectUpdate(_projectForm.tutorial.tutorialId!, _projectForm.projectLinkController.text));
         }
       },
       style: ElevatedButton.styleFrom(
           primary: Colors.blue,
           textStyle: TextStyle(color: Colors.white),
           splashFactory: InkSplash.splashFactory),
-    );
-  }
-
+    ),
+          const SizedBox(
+            width: 10,
+          ),
+          IconButton(
+              onPressed: () {
+                projectBloc.add(ProjectDelete(_projectForm.tutorial.tutorialId!));
+              },
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              )),
+        ],
+      );
+    }
+  
   @override
   Widget build(BuildContext context) {
+    projectBloc = BlocProvider.of<ProjectBloc>(context);
+    return BlocConsumer<ProjectBloc, ProjectState>(
+      listener: (context, state) {
+        if (state.message != "") {
+          CustomSnackBar.display(context, CustomSnackBar.get(state.message));
+        }
+      },
+      builder: (context, state) {
+        if (state is TutorialFetching || projectBloc.state.tutorial == null)
+          return Center(child: CircularProgressIndicator());
+        final tutorial = projectBloc.state.tutorial!;
+        if (tutorial.submittedLink == null){
+          _projectForm = ProjectFormModel.fromTutorial(tutorial);
+        } else {
+          _projectForm = ProjectFormModel.fromTutorial(tutorial);
+        }
+        // _fieldDisabled = tutorial.submittedLink != null;
         prefs = BlocProvider.of<AuthenticationBloc>(context).preferences;
         isClient = prefs!.get("role").toString() == "CLIENT";
         username = prefs!.getString("username");
-		  	return Align(
-		  	alignment: Alignment.topCenter,
-		  	child: Container(
-		  	margin: EdgeInsets.all(8),
-		  decoration: BoxDecoration(
-		  border: Border.all(color: Colors.black.withOpacity(.1)),
-		  borderRadius: BorderRadius.all(Radius.circular(10)),
-		  ),
-		  constraints: BoxConstraints(maxWidth: 600),
-		  child: SingleChildScrollView(
-		  //   controller: controller,
-		  child: Column(
-		  crossAxisAlignment: CrossAxisAlignment.start,
-		  children: [
-		  Container(
-		  margin: EdgeInsets.all(8),
-		  padding: EdgeInsets.all(8),
-		  decoration: BoxDecoration(
-		  border: Border.all(color: Colors.black.withOpacity(.1)),
-		  borderRadius: BorderRadius.all(Radius.circular(10)),
-		  ),
-		  child: Column(
-		  crossAxisAlignment: CrossAxisAlignment.start,
-		  children: [
-		  Container(
-		  decoration: BoxDecoration(
-		  border: Border(
-		  bottom: BorderSide(
-		  width: 1,
-		  color: Colors.black.withOpacity(.1))),
-		  ),
-		  margin: EdgeInsets.only(bottom: 10),
-		  width: double.infinity,
-		  child: Text("Enjoy your tutorial!",
-		  style: Theme.of(context).textTheme.headline2)),
-		  Text(widget.tutorial.content),
-		  ],
-		  ),
-		  ),
-		  Container(
-		  margin: EdgeInsets.all(8),
-		  padding: EdgeInsets.all(8),
-		  decoration: BoxDecoration(
-		  border: Border.all(color: Colors.black.withOpacity(.1)),
-		  borderRadius: BorderRadius.all(Radius.circular(10)),
-		  ),
-		  child: Column(
-		  crossAxisAlignment: CrossAxisAlignment.start,
-		  children: [
-		  Container(
-		  width: double.infinity,
-		  margin: EdgeInsets.only(bottom: 10),
-		  child: Text(widget.tutorial.project.title,
-		  style: Theme.of(context).textTheme.headline2),
-		  decoration: BoxDecoration(
-		  border: Border(
-		  bottom: BorderSide(
-		  width: 1,
-		  color: Colors.black.withOpacity(.1))),
-		  ),
-		  ),
-		  Text(widget.tutorial.project.problemStatement),
-		  SizedBox(height: 20),
-
-		  if (isClient!)
-		  Container(
-		  width: double.infinity,
-		  child: Text(
-		  "Enter github link to submit the project",
-		  style: Theme.of(context).textTheme.headline3),
-		  decoration: BoxDecoration(
-		  border: Border(
-		  bottom: BorderSide(
-		  width: 1,
-		  color: Colors.black.withOpacity(.1))),
-		  ),
-		  ),
-		  if (isClient!)
-		  Row(
-		  children: <Widget>[
-		  Expanded(
-		  child: Form(
-		  key: widget._formKey,
-		  child: TextFormField(
-		  readOnly: _fieldDisabled,
-		  controller: _projectLinkController,
-		  validator: (value) {
-		  if (value!.isEmpty ||
-		  value == null ||
-		  !RegExp(r"^https:\/\/github.com\/[A-Za-z][A-Za-z0-9]+\/[A-Za-z][A-Za-z0-9]+$")
-		  		.hasMatch(value)) {
-		  return "Please enter a valid github repo link";
-		  }
-		  },
-		  cursorColor: Colors.black,
-		  decoration: InputDecoration(
-		  hintText:
-		  'E.g https://github.com/username/reponame',
-		  enabledBorder: const UnderlineInputBorder(
-		  borderSide:
-		  BorderSide(color: Colors.blue),
-		  ),
-		  focusedBorder: UnderlineInputBorder(
-		  borderSide:
-		  BorderSide(color: Colors.green),
-		  ),
-		  border: UnderlineInputBorder(
-		  borderSide:
-		  BorderSide(color: Colors.blue),
-		  ),
-		  isDense: false,
-		  contentPadding: EdgeInsets.only(
-		  left: 5, top: 0, bottom: 0, right: 0),
-		  ),
-		  ),
-		  ),
-		  ),
-		  Container(
-		  child: widget.tutorial.submittedLink == null
-		  ? ElevatedButton(
-		  child: FittedBox(
-		  child: Text("submit"),
-		  ),
-		  onPressed: () async {
-		  if (widget._formKey.currentState!
-		  		.validate()) {
-		  final res = await ProjectService
-		  		.createProject(
-		  tutorialId: widget
-		  		.tutorial.tutorialId,
-		  projectUrl:
-		  _projectLinkController
-		  		.text);
-		  print(res);
-		  }
-		  },
-		  style: ElevatedButton.styleFrom(
-		  primary: Colors.blue,
-		  textStyle: TextStyle(
-		  color: Colors.white),
-		  splashFactory:
-		  InkSplash.splashFactory),
-		  )
-		  		: getButtons()),
-		  ],
-		  ),
-		  SizedBox(height: 10),
-		  ])),
-				SizedBox(height: 20),
-		  ],
-		  ),
-		  ),
-		  ));
+        return Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black.withOpacity(.1)),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              constraints: BoxConstraints(maxWidth: 600),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black.withOpacity(.1)),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        width: 1,
+                                        color: Colors.black.withOpacity(.1))),
+                              ),
+                              margin: EdgeInsets.only(bottom: 10),
+                              width: double.infinity,
+                              child: Text("Enjoy your tutorial!",
+                                  style:
+                                      Theme.of(context).textTheme.headline2)),
+                          Text(projectBloc.state.tutorial!.content!),
+                        ],
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: Colors.black.withOpacity(.1)),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: Text(projectBloc.state.tutorial!.project!.title!,
+                                    style:
+                                        Theme.of(context).textTheme.headline2),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          width: 1,
+                                          color: Colors.black.withOpacity(.1))),
+                                ),
+                              ),
+                              Text(projectBloc.state.tutorial!.project!.problemStatement!),
+                              SizedBox(height: 20),
+                              if (isClient!)
+                                Container(
+                                    child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                          "Enter github link to submit the project",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                width: 1,
+                                                color: Colors.black
+                                                    .withOpacity(.1))),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Form(
+                                            key: _projectForm.formKey,
+                                            child: TextFormField(
+                                              controller:
+                                                  _projectForm.projectLinkController,
+                                              validator: (value) {
+                                                if (value!.isEmpty ||
+                                                    value == null ||
+                                                    !RegExp(r"^https:\/\/github.com\/[A-Za-z][A-Za-z0-9]+\/[A-Za-z][A-Za-z0-9]+$")
+                                                        .hasMatch(value)) {
+                                                  return "Please enter a valid github repo link";
+                                                }
+                                              },
+                                              cursorColor: Colors.black,
+                                              decoration: const InputDecoration(
+                                                hintText:
+                                                    'E.g https://github.com/username/reponame',
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue),
+                                                ),
+                                                focusedBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.green),
+                                                ),
+                                                border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.blue),
+                                                ),
+                                                isDense: false,
+                                                contentPadding: EdgeInsets.only(
+                                                    left: 5,
+                                                    top: 0,
+                                                    bottom: 0,
+                                                    right: 0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                            child: tutorial
+                                                        .submittedLink ==
+                                                    null
+                                                ? ElevatedButton(
+                                                    child: FittedBox(
+                                                      child: state is ProjectSubmissionLoading ? const Text("submitting ... ") : Text("submit"),
+                                                    ),
+                                                    onPressed: () async {
+                                                      if (_projectForm.formKey
+                                                          .currentState!
+                                                          .validate()) {
+                                                        projectBloc
+                                                            .add(ProjectCreation(
+                                                                tutorial
+                                                                    .tutorialId!,
+                                                                _projectForm.projectLinkController
+                                                                    .text));
+                                                      }
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        primary: Colors.blue,
+                                                        textStyle: const TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                        splashFactory: InkSplash
+                                                            .splashFactory),
+                                                  )
+                                                : getButtons()),
+                                      ],
+                                    ),
+                                  ],
+                                )),
+                              const SizedBox(height: 10),
+                            ])),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ));
+      },
+    );
   }
 }

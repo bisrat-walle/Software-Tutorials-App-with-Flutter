@@ -1,7 +1,7 @@
 part of 'tutorial_bloc.dart';
 
 abstract class TutorialEvent extends Equatable {
-
+  String message = "";
   int selectedTab = 0;
   TutorialEvent(this.selectedTab);
 
@@ -52,5 +52,20 @@ class LoadMyTutorials extends TutorialEvent {
 }
 class LoadEnrolledTutorials extends TutorialEvent {
   LoadEnrolledTutorials(int selectedTab) : super(selectedTab);
+}
+
+class DeleteTutorialEvent extends TutorialEvent {
+  int tutorialId;
+  DeleteTutorialEvent(this.tutorialId, int selectedTab) : super(selectedTab);
+}
+
+class EnrollTutorialEvent extends TutorialEvent {
+  int tutorialId;
+  EnrollTutorialEvent(this.tutorialId, int selectedTab) : super(selectedTab);
+}
+
+class UnEnrollTutorialEvent extends TutorialEvent {
+  int tutorialId;
+  UnEnrollTutorialEvent(this.tutorialId, int selectedTab) : super(selectedTab);
 }
 

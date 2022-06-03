@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:softwaretutorials/domain/models/tutorial_form_model.dart';
-import 'package:softwaretutorials/infrastructure/repositories/tutorial_service.dart';
-import 'package:softwaretutorials/domain/models/tutorial.dart';
-import 'package:softwaretutorials/presentation/pages/screens/manageuser/bloc/manageuser_bloc.dart';
+import 'package:softwaretutorials/domain/core/models.dart';
+import 'package:softwaretutorials/domain/tutorials/tutorial_form_model.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/enrollement_service.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
 
 part 'tutorial_event.dart';
 part 'tutorial_state.dart';
@@ -13,31 +12,88 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   TutorialBloc() : super(TutorialLoadingState(0)) {
     on<GotoManageUserEvent>(
       (event, emit) {
-        emit(ManageUser(event.selectedTab));
+        final newState = ManageUser(event.selectedTab);
+        newState.message = event.message;
+        emit(newState);
       },
     );
     on<GotoTutorialDetailEvent>(
       (event, emit) {
-        print("tutorial detail tab selected "+event.selectedTab.toString());
-        emit(TutorialDetailState(event.tutorial, event.selectedTab));
+        final newState =TutorialDetailState(event.tutorial, event.selectedTab);
+        newState.message = event.message;
+        emit(newState);
       },
     );
     on<GotoCreateTutorialEvent>((event, emit) {
-      emit(CreateTutorialState(TutorialFormModel.empty(), event.selectedTab));
+      final newState = CreateTutorialState(TutorialFormModel.empty(), event.selectedTab);
+      newState.message = event.message;
+      emit(newState);
     },);
     on<LoadAllTutorials>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
       final tutorialList = await TutorialRepository.getAllTutorials();
-      emit(AllTutorialsLoadedState(tutorialList, event.selectedTab));
+      final newState = AllTutorialsLoadedState(tutorialList, event.selectedTab);
+      newState.message = event.message;
+      emit(newState);
     });
     on<LoadMyTutorials>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
       final tutorialList = await TutorialRepository.getMyTutorials();
-      emit(MyTutorialsLoadedState(tutorialList, event.selectedTab));
+      final newState = MyTutorialsLoadedState(tutorialList, event.selectedTab);
+      newState.message = event.message;
+      emit(newState);
     });
+    on<LoadEnrolledTutorials>((event, emit) async {
+      emit(TutorialLoadingState(event.selectedTab));
+      final tutorialList = await TutorialRepository.getEnrolledTutorials();
+      final newState = EnrolledTutorialsLoaded(tutorialList, event.selectedTab);
+      newState.message = event.message;
+      emit(newState);
+    });
+    on<DeleteTutorialEvent>((event, emit) async {
+      emit(TutorialLoadingState(event.selectedTab));
+      final res = await TutorialRepository.deleteTutorial(tutorialId: event.tutorialId);
+      if (res){
+        if (event.selectedTab == 0){
+          add(LoadAllTutorials(event.selectedTab));
+        } else {
+          add(LoadMyTutorials(event.selectedTab));
+        }
+      }
+    },);
+    on<EnrollTutorialEvent>((event, emit) async {
+      emit(TutorialLoadingState(event.selectedTab));
+      final String? res = await EnrollementRepository.enroll(tutorialId: event.tutorialId);
+      if (event.selectedTab == 0){
+          final newState = LoadAllTutorials(event.selectedTab);
+          newState.message = res!;
+          add(newState);
+        } else {
+          final newState = LoadEnrolledTutorials(event.selectedTab);
+          newState.message = res!;
+          add(newState);
+        }  
+      
+    },);
+    on<UnEnrollTutorialEvent>((event, emit) async {
+      emit(TutorialLoadingState(event.selectedTab));
+      final String? res = await EnrollementRepository.unenroll(tutorialId: event.tutorialId);
+        if (event.selectedTab == 0){
+          final newState = LoadAllTutorials(event.selectedTab);
+          newState.message = res!;
+          add(newState);
+        } else {
+          final newState = LoadEnrolledTutorials(event.selectedTab);
+          newState.message = res!;
+          add(newState);
+        }
+      
+    },);
     on<GotoUpdateTutorialEvent>(
       (event, emit) {
-        emit(UpdateTutorialState(event.tutorialForm, 2));
+      final newState = UpdateTutorialState(event.tutorialForm, 2);
+      newState.message = event.message;
+      emit(newState);
       },
     );
     on<CreateTutorialEvent>((event, emit) async {
@@ -48,7 +104,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         problemStatement: event.tutorialForm.problemStatementController.text,
         projectTitle: event.tutorialForm.projectTitleController.text,
       );
-      emit(TutorialLoadingState(event.selectedTab));
+      add(LoadMyTutorials(1));
     });
     on<UpdateTutorialEvent>(
       (event, emit) async {
@@ -59,7 +115,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         projectTitle: event.tutorialForm.projectTitleController.text,
         tutorialId: event.tutorialForm.tutorialId!
       );
-      emit(TutorialInitialState(event.selectedTab));
+      add(LoadMyTutorials(1));
       },
     );
   }

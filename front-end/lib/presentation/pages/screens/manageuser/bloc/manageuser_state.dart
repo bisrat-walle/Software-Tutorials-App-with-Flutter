@@ -14,6 +14,9 @@ class ManageuserInitial extends ManageuserState {}
 
 class ManageuserLoading extends ManageuserState {}
 
+
+class ManageUserLoading extends ManageuserState {}
+
 class ManageuserLoaded extends ManageuserState {
   final List<User> userList;
 

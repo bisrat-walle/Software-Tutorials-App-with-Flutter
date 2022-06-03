@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:softwaretutorials/domain/models/models.dart';
+import 'package:softwaretutorials/domain/core/models.dart';
 
 class TutorialFormModel {
   final TextEditingController titleController;

@@ -1,8 +1,7 @@
 import 'package:http/http.dart' as http;
-import 'package:softwaretutorials/domain/models/login_response.dart';
-
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:softwaretutorials/domain/auth/login_response.dart';
 
 
 String _baseUrl = "http://localhost:8080/api/v1/login";
@@ -14,7 +13,6 @@ class AuthenticationRepository {
       Uri.parse(_baseUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        
         'accept': '*/*'
       },
       body: jsonEncode(<String, String?>{

@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http/http.dart';
 import 'dart:convert';
 
-import 'package:softwaretutorials/infrastructure/repositories/token_intercepter.dart';
+import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
+
 
 String _baseUrl = "http://localhost:8080/api/v1/tutorials/";
 
@@ -11,7 +12,7 @@ http.Client client = InterceptedClient.build(interceptors: [
 	TokenInterceptor(),
 ]);
 
-class EnrollementService{
+class EnrollementRepository{
 
 	static Future<String?> enroll({required int tutorialId}) async {
 		try{
@@ -20,10 +21,9 @@ class EnrollementService{
 			);
 
 			if (response.statusCode == 204) {
-				return "Course successfully enrolled";
+				return "Tutorial successfully enrolled";
 			}
 		} catch(e){
-			print(e);
 			return "Unable to enroll";
 		}
 	}
@@ -35,10 +35,9 @@ class EnrollementService{
 			);
 
 			if (response.statusCode == 204) {
-				return "Course successfully unenrolled";
+				return "Tutorial successfully unenrolled";
 			}
 		} catch(e){
-			print(e);
 			return "Unable to unenroll";
 		}
 	}

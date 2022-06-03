@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:softwaretutorials/domain/models/models.dart';
+import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
 import 'package:softwaretutorials/presentation/pages/signin/bloc/signin_bloc.dart';
 import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
 
@@ -69,7 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   margin: EdgeInsets.only(left: 35, right: 35),
                                   child: Column(
                                     children: [
-                                      SizedBox(height: 25),
+                                      SizedBox(height: 10),
+                                      Text("Use 'admin' both as username and password to login as ADMIN", style: TextStyle(fontSize: 15, color: Colors.purple),),
+                                      SizedBox(height: 10),
                                       Container(
                                         constraints:
                                             BoxConstraints(maxWidth: 450),
@@ -124,8 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       SizedBox(
                                           height: 50,
                                           width: 450,
-                                          child: BlocBuilder<SigninBloc,
+                                          child: BlocConsumer<SigninBloc,
                                               SigninState>(
+                                            listener: (context, state) {
+                                              if (state is SigninError){
+                                                CustomSnackBar.display(context, CustomSnackBar.get(state.error));
+                                              }
+                                            },
                                             builder: (context, state) {
                                               return ElevatedButton(
                                                 style: ButtonStyle(
@@ -169,9 +176,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                                                   .text,
                                                               _navigationBloc));
 
-                                                          // context
-                                                          //     .go("/tutorials/all");
-
                                                         }
                                                       }
                                                     : null,
@@ -186,11 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             TextButton(
                                               child: Text("Create Account"),
                                               onPressed: () {
-                                                //context.go("/signup");
-                                                //_navigationBloc
-                                                //    .add(GotoSignup());
-												_navigationBloc.add(NavigationInitialEvent());
-												//BlocProvider.of<NavigationBloc>(context).add(GotoSignup());
+												_navigationBloc.add(GotoSignup());
                                               },
                                             )
                                           ])

@@ -6,7 +6,8 @@ enum APP_PAGE {
   error,
   profile,
   tutorials,
-  tutorialDetail
+  tutorialDetail,
+  updateProfile
 }
 
 extension AppPageExtension on APP_PAGE {
@@ -17,6 +18,8 @@ extension AppPageExtension on APP_PAGE {
         return "/";
       case APP_PAGE.login:
         return "/login";
+      case APP_PAGE.updateProfile:
+        return "/profile/update";
       case APP_PAGE.splash:
         return "/welcome";
 	  case APP_PAGE.signup:
@@ -46,6 +49,8 @@ extension AppPageExtension on APP_PAGE {
 		return "SIGNUP";
 	  case APP_PAGE.profile:
 		return "PROFILE";
+    case APP_PAGE.updateProfile:
+		return "UPDATE PROFILE";
 	  case APP_PAGE.tutorials:
 		return "ALL TUTORIALS";
 	  case APP_PAGE.tutorialDetail:
@@ -73,6 +78,8 @@ extension AppPageExtension on APP_PAGE {
 		return "Software Tutorials - All Tutorials";
 	  case APP_PAGE.tutorialDetail:
 		return "Software Tutorials - Tutorial Detail";
+    case APP_PAGE.updateProfile:
+    return "Software Tutorials - Update Profile";
       case APP_PAGE.error:
         return "/error";
       default:

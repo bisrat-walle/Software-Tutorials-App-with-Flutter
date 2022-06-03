@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:softwaretutorials/infrastructure/repositories/tutorial_service.dart';
-import 'package:softwaretutorials/presentation/core/authentication/bloc/authentication_bloc.dart';
-import 'package:softwaretutorials/presentation/pages/screens/manage_users_screen.dart';
+import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
+import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
+import 'package:softwaretutorials/presentation/pages/screens/manageuser/bloc/manage_users_screen.dart';
+import 'package:softwaretutorials/presentation/pages/screens/project_submission/bloc/project_bloc.dart';
 import 'package:softwaretutorials/presentation/pages/screens/screens.dart';
 import 'package:softwaretutorials/presentation/pages/screens/tutorial/bloc/tutorial_bloc.dart';
 import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
@@ -42,28 +44,47 @@ class TutorialScreen extends StatelessWidget {
                   return Text("Enrolled Tutorials");
                 if (state is MyTutorialsLoadedState)
                   return Text("My Tutorials");
-                if (role == "ADMIN")
-                return Text("Manage Users and Tutorials");
+                if (role == "ADMIN") return Text("Manage Users and Tutorials");
                 return Text("All Tutorials");
               },
             ),
             actions: [
-              BlocBuilder<TutorialBloc, TutorialState>(
+              BlocConsumer<TutorialBloc, TutorialState>(
+                listener: (context, state) {
+                  if (state.message != "") {
+                    CustomSnackBar.display(
+                        context, CustomSnackBar.get(state.message));
+                  }
+                },
                 builder: (context, state) {
                   if (state is TutorialDetailState) {
-                    	if (username == state.tutorial.instructor!.username)
+                    if (username == state.tutorial.instructor!.username)
                       Row(
                         children: [
-                          IconButton(onPressed: () async {}, icon: Icon(Icons.edit, color: Colors.black,)),
-                          SizedBox(width: 10,),
-                          IconButton(onPressed: () async {
-
-                            final res = await TutorialRepository.deleteTutorial(tutorialId: state.tutorial.tutorialId!);
-                            print(res);
-                          }
-
-                            ,icon: Icon(Icons.delete, color: Colors.red,),),
-                          SizedBox(width: 20,)
+                          IconButton(
+                              onPressed: () async {},
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.black,
+                              )),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              final res =
+                                  await TutorialRepository.deleteTutorial(
+                                      tutorialId: state.tutorial.tutorialId!);
+                              print(res);
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          )
                         ],
                       );
                   }
@@ -73,11 +94,11 @@ class TutorialScreen extends StatelessWidget {
                         child: IconButton(
                             icon: Icon(Icons.check, size: 25),
                             onPressed: () async {
-
-                              if (state.tutorialForm.formKey.currentState!.validate()){
-                                _tutorialBloc.add(CreateTutorialEvent(state.tutorialForm, state.selectedTab));
+                              if (state.tutorialForm.formKey.currentState!
+                                  .validate()) {
+                                _tutorialBloc.add(CreateTutorialEvent(
+                                    state.tutorialForm, state.selectedTab));
                               }
-
                             }));
                   }
                   if (state is UpdateTutorialState) {
@@ -86,11 +107,11 @@ class TutorialScreen extends StatelessWidget {
                         child: IconButton(
                             icon: Icon(Icons.check, size: 25),
                             onPressed: () async {
-
-                              if (state.tutorialForm.formKey.currentState!.validate()){
-                                _tutorialBloc.add(UpdateTutorialEvent(state.tutorialForm, state.selectedTab));
+                              if (state.tutorialForm.formKey.currentState!
+                                  .validate()) {
+                                _tutorialBloc.add(UpdateTutorialEvent(
+                                    state.tutorialForm, state.selectedTab));
                               }
-
                             }));
                   }
                   return Container();
@@ -98,33 +119,30 @@ class TutorialScreen extends StatelessWidget {
               ),
             ],
           ),
-          // drawer: SafeArea(child: CustomDrawer.get(context)),
-          body: BlocConsumer<TutorialBloc, TutorialState>(
-            listener: (context, state) {
-              if (state is EnrolledTutorialsLoaded)
-                _navigatorBloc.add(GotoEnrolledTutorials());
-              if (state is MyTutorialsPage)
-                _navigatorBloc.add(GotoMyTutorials());
-            },
+          body: BlocBuilder<TutorialBloc, TutorialState>(
             builder: (context, state) {
-            if (state is! ManageUser) {
-              if (state is ManageUsersScreen) {
-                return ManageUsersScreen();
-              }
+              if (state is! ManageUser) {
+                if (state is ManageUsersScreen) {
+                  return ManageUsersScreen();
+                }
 
-              if(state is TutorialDetailState){
-                return TutorialDetailScreen(tutorial: state.tutorial);
-              }
+                if (state is TutorialDetailState) {
+                  return BlocProvider(
+                    create: (context) => ProjectBloc()..add(LoadTutorialEvent(state.tutorial.tutorialId)),
+                    child: TutorialDetailScreen(
+                      tutorialId: state.tutorial.tutorialId,
+                    ),
+                  );
+                }
 
+                if (state is CreateTutorialState) {
+                  return CreateTutorialScreen(state.tutorialForm);
+                }
+                if (state is UpdateTutorialState) {
+                  return CreateTutorialScreen(state.tutorialForm);
+                }
 
-              if (state is CreateTutorialState) {
-                return CreateTutorialScreen(state.tutorialForm);
-              }
-              if (state is UpdateTutorialState) {
-                return CreateTutorialScreen(state.tutorialForm);
-              }
-              
-              return TutorialListView();
+                return TutorialListView();
               } else {
                 return ManageUsersScreen();
               }
@@ -136,37 +154,38 @@ class TutorialScreen extends StatelessWidget {
                 type: BottomNavigationBarType.fixed,
                 currentIndex: state.selectedTab,
                 onTap: (index) {
-                  if (state.selectedTab == 1 && role == "ADMIN"){
+                  if (state.selectedTab == 1 && role == "ADMIN") {
                     _tutorialBloc.add(GotoManageUserEvent(index));
                   }
-
-                  if (index == 1 && role == "ADMIN"){
-                    _tutorialBloc.add(GotoManageUserEvent(index));
-                  }
-                  if (index == 0){
+                  if (index == 0) {
                     _tutorialBloc.add(LoadAllTutorials(index));
                   }
-                  if(index == 1){
-                    if (role == "INSTRUCTOR")
-                    _tutorialBloc.add(LoadMyTutorials(index));
-                    if(role == "CLIENT")
-                    _tutorialBloc.add(LoadEnrolledTutorials(index));
+                  if (index == 1) {
+                    if (role == "ADMIN") {
+                      _tutorialBloc.add(GotoManageUserEvent(index));
+                    }
+                    if (role == "INSTRUCTOR") {
+                      _tutorialBloc.add(LoadMyTutorials(index));
+                    }
+                    if (role == "CLIENT") {
+                      _tutorialBloc.add(LoadEnrolledTutorials(index));
+                    }
                   }
-                  if (index == 2 && state is! UpdateTutorialState){
+                  if (index == 2 && state is! UpdateTutorialState) {
                     _tutorialBloc.add(GotoCreateTutorialEvent(index));
                   }
                 },
                 items: <BottomNavigationBarItem>[
                   if (role != "ADMIN")
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.collections),
-                    label: 'All Tutorials',
-                  ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.collections),
+                      label: 'All Tutorials',
+                    ),
                   if (role == "ADMIN")
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.collections),
-                    label: 'Manage Tutorials',
-                  ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.collections),
+                      label: 'Manage Tutorials',
+                    ),
                   // const BottomNavigationBarItem(
                   //   icon: Icon(Icons.search),
                   //   label: 'Search tutorial',

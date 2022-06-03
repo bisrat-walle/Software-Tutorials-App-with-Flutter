@@ -1,15 +1,9 @@
-import 'dart:developer';
-import 'dart:js';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:softwaretutorials/domain/models/models.dart';
-import 'package:softwaretutorials/home.dart';
+import 'package:softwaretutorials/domain/core/models.dart';
 import 'package:softwaretutorials/presentation/pages/screens/screens.dart';
+import 'package:softwaretutorials/presentation/pages/screens/update_profile/update_profile_screen.dart';
 import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
-import 'navigation_bloc_wrapper.dart';
 
 class TutorialGoRouter {
   static GoRouter get(NavigationBloc navigationBloc) {
@@ -38,6 +32,11 @@ class TutorialGoRouter {
 			name: APP_PAGE.tutorials.toName,
 			builder: (context, state) => TutorialScreen(),
 		  ),
+      GoRoute(
+			path: APP_PAGE.updateProfile.toPath,
+			name: APP_PAGE.updateProfile.toName,
+			builder: (context, state) => UpdateProfileScreen(),
+		  ),
 		],
 		//errorBuilder: (context, state) => ErrorPage(error: state.error.toString()),
 		redirect: (state) {
@@ -45,11 +44,14 @@ class TutorialGoRouter {
 			  final tutorialsLocation = state.namedLocation(APP_PAGE.tutorials.toName);
 			  final splashLocation = state.namedLocation(APP_PAGE.splash.toName);
 			  final signupLocation = state.namedLocation(APP_PAGE.signup.toName);
-		
-		print("Navigation redirect "+ navigationBloc.state.toString());
+        final updateProfileLocation = state.namedLocation(APP_PAGE.updateProfile.toName);
         
         if(navigationBloc.state is SplashState && state.subloc != splashLocation){
           return splashLocation;
+        }
+
+        if(navigationBloc.state is UpdateProfilePage && state.subloc != updateProfileLocation){
+          return updateProfileLocation;
         }
 
 			  if (navigationBloc.state is SigninPage && state.subloc != loginLocation){

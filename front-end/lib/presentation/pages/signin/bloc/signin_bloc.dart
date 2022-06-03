@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:softwaretutorials/infrastructure/repositories/authentication_service.dart';
-import 'package:softwaretutorials/presentation/core/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/infrastructure/auth/authentication_service.dart';
 import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
 
 part 'signin_event.dart';
