@@ -9,7 +9,9 @@ part 'tutorial_event.dart';
 part 'tutorial_state.dart';
 
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
-  TutorialBloc() : super(TutorialLoadingState(0)) {
+  final TutorialRepository tutorialRepository;
+  final EnrollementRepository enrollementRepository;
+  TutorialBloc(this.tutorialRepository, this.enrollementRepository) : super(TutorialLoadingState(0)) {
     on<GotoManageUserEvent>(
       (event, emit) {
         final newState = ManageUser(event.selectedTab);
@@ -31,39 +33,39 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     },);
     on<LoadAllTutorials>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final tutorialList = await TutorialRepository.getAllTutorials();
+      final tutorialList = await tutorialRepository.getAllTutorials();
       final newState = AllTutorialsLoadedState(tutorialList, event.selectedTab);
       newState.message = event.message;
       emit(newState);
     });
     on<LoadMyTutorials>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final tutorialList = await TutorialRepository.getMyTutorials();
+      final tutorialList = await tutorialRepository.getMyTutorials();
       final newState = MyTutorialsLoadedState(tutorialList, event.selectedTab);
       newState.message = event.message;
       emit(newState);
     });
     on<LoadEnrolledTutorials>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final tutorialList = await TutorialRepository.getEnrolledTutorials();
+      final tutorialList = await tutorialRepository.getEnrolledTutorials();
       final newState = EnrolledTutorialsLoaded(tutorialList, event.selectedTab);
       newState.message = event.message;
       emit(newState);
     });
     on<DeleteTutorialEvent>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final res = await TutorialRepository.deleteTutorial(tutorialId: event.tutorialId);
+      final res = await tutorialRepository.deleteTutorial(tutorialId: event.tutorialId);
       if (res){
         if (event.selectedTab == 0){
           add(LoadAllTutorials(event.selectedTab));
         } else {
-          add(LoadMyTutorials(event.selectedTab));
+          add(LoadAllTutorials(event.selectedTab));
         }
       }
     },);
     on<EnrollTutorialEvent>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final String? res = await EnrollementRepository.enroll(tutorialId: event.tutorialId);
+      final String? res = await enrollementRepository.enroll(tutorialId: event.tutorialId);
       if (event.selectedTab == 0){
           final newState = LoadAllTutorials(event.selectedTab);
           newState.message = res!;
@@ -77,7 +79,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     },);
     on<UnEnrollTutorialEvent>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final String? res = await EnrollementRepository.unenroll(tutorialId: event.tutorialId);
+      final String? res = await enrollementRepository.unenroll(tutorialId: event.tutorialId);
         if (event.selectedTab == 0){
           final newState = LoadAllTutorials(event.selectedTab);
           newState.message = res!;
@@ -98,7 +100,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     );
     on<CreateTutorialEvent>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final res = await TutorialRepository.createTutorial(
+      final res = await tutorialRepository.createTutorial(
         content: event.tutorialForm.contentController.text,
         title: event.tutorialForm.titleController.text,
         problemStatement: event.tutorialForm.problemStatementController.text,
@@ -108,13 +110,13 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     });
     on<UpdateTutorialEvent>(
       (event, emit) async {
-        final res = await TutorialRepository.updateTutorial(
+        final res = await tutorialRepository.updateTutorial(
         content: event.tutorialForm.contentController.text,
         title: event.tutorialForm.titleController.text,
         problemStatement: event.tutorialForm.problemStatementController.text,
         projectTitle: event.tutorialForm.projectTitleController.text,
         tutorialId: event.tutorialForm.tutorialId!
-      );
+      );if (res)
       add(LoadMyTutorials(1));
       },
     );

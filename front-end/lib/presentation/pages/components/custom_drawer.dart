@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
 import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
 
@@ -12,14 +11,14 @@ class CustomDrawer{
           children: [
             DrawerHeader(
             
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipOval(
+                    const ClipOval(
                         child: Image(
                       image: AssetImage(
                         "assets/images/logo.png",
@@ -28,19 +27,19 @@ class CustomDrawer{
                       height: 80,
                       fit: BoxFit.cover,
                     )),
-                    SizedBox(
+                    const SizedBox(
                       width: 30,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
-                        Text("Ethio Software Tutorial"),
-                        SizedBox(height: 20,),
+                        const Text("Ethio Software Tutorial"),
+                        const SizedBox(height: 20,),
                         Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("username").toString()),
-                        Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("Role").toString(), style: TextStyle(fontSize: 13),)
+                        Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("Role").toString(), style: const TextStyle(fontSize: 13),)
                       ],
                     )
                   ],
@@ -48,7 +47,7 @@ class CustomDrawer{
               
             ListTile(
                 title: TextButton(
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Edit Profile",
                         style: TextStyle(color: Colors.black)),
@@ -57,12 +56,12 @@ class CustomDrawer{
                     BlocProvider.of<NavigationBloc>(context).add(GotoUpdateProfileState());
                   },
                 ),
-                leading: Icon(Icons.edit)),
+                leading: const Icon(Icons.edit)),
             ListTile(
                 title: TextButton(
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Logout",
+                    child: const Text("Logout",
                         style: TextStyle(color: Colors.black)),
                   ),
                   onPressed: () {
@@ -71,7 +70,7 @@ class CustomDrawer{
         BlocProvider.of<NavigationBloc>(context).add(GotoSignin());
                   },
                 ),
-                leading: Icon(Icons.logout)),
+                leading: const Icon(Icons.logout)),
           ],
         ),
       );

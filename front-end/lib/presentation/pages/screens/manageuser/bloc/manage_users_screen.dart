@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/profile_service.dart';
 import 'package:softwaretutorials/presentation/pages/screens/manageuser/bloc/manageuser_bloc.dart';
 
 class ManageUsersScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   List<bool> selected = List<bool>.generate(20, (int index) => false);
   @override
   Widget build(BuildContext context) {
-    final _manageUserBloc = ManageuserBloc();
+    final _manageUserBloc = ManageuserBloc(RepositoryProvider.of<ProfileRepository>(context));
     _manageUserBloc.add(GotoManageUserScreenEvent());
     return Container(
       child: Stack(children: [

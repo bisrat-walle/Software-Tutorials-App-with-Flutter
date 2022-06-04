@@ -14,6 +14,7 @@ class User extends Equatable{
           return User();
         }
         return User(
+            password: json['password'],
             id: json['id'],
             username: json['username'],
             email: json['email'],

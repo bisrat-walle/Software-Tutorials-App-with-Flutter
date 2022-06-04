@@ -1,7 +1,4 @@
-import 'dart:html';
-
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
 
 part 'navigation_event.dart';

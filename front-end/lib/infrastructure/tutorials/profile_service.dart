@@ -10,13 +10,12 @@ import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
 
 String _baseUrl = "http://localhost:8080/api/v1/";
 
-http.Client client = InterceptedClient.build(interceptors: [
-  TokenInterceptor(),
-]);
-
 class ProfileRepository{
-  static Future<RepoResponse> signup({required String email,required String username, required fullName, required String password, required String role}) async {
-    final response = await http.post(
+  final client;
+
+  ProfileRepository(this.client);
+  Future<RepoResponse> signup({required String email,required String username, required fullName, required String password, required String role}) async {
+    final response = await client.post(
         Uri.parse(_baseUrl+"register"),
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -42,7 +41,7 @@ class ProfileRepository{
     }
     return RepoResponse(false, error: "Unknown Error (try again)");
   }
-  static Future<RepoResponse> updateProfile ({required String email,required String username, required fullName, required String password}) async {
+  Future<RepoResponse> updateProfile ({required String email,required String username, required fullName, required String password}) async {
     final response = await client.put(
         Uri.parse(_baseUrl+"profile"),
         body: jsonEncode(<String, dynamic>{
@@ -64,7 +63,7 @@ class ProfileRepository{
     return RepoResponse(false, error: "Unknown Error (try again)");
   }
 
-  static Future<List<User>> getAllUsers() async {
+  Future<List<User>> getAllUsers() async {
     final response = await client.get(
         Uri.parse(_baseUrl+"users/"),
     );
@@ -78,7 +77,7 @@ class ProfileRepository{
     return [];
   }
 
-  static Future<bool> deleteUser(int userId) async {
+  Future<bool> deleteUser(int userId) async {
     final response = await client.delete(
       Uri.parse(_baseUrl+"users/"+userId.toString())
     );
@@ -88,7 +87,7 @@ class ProfileRepository{
     return false;
   }
 
-  static Future<User?> getUserProfile() async {
+  Future<User?> getUserProfile() async {
     final response = await client.get(
       Uri.parse(_baseUrl+"profile/")
     );

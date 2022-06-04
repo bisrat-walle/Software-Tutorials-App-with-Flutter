@@ -7,10 +7,11 @@ part 'signup_event.dart';
 part 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  SignupBloc() : super(SignupInitial()) {
+  final profileRepository;
+  SignupBloc(this.profileRepository) : super(SignupInitial()) {
     on<AttemptSignupEvent>((event, emit) async {
       emit(SignupLoadingState());
-      final RepoResponse res = await ProfileRepository.signup(
+      final RepoResponse res = await profileRepository.signup(
         email: event.email,
         password: event.password,
         fullName: event.fullName,

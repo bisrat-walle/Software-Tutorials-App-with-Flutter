@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _signupBloc = SignupBloc();
+    final _signupBloc = SignupBloc(RepositoryProvider.of<ProfileRepository>(context));
     return SafeArea(
       child: Scaffold(
         // backgroundColor: Colors.transparent,

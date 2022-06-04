@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/enrollement_service.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/project_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
 import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
 import 'package:softwaretutorials/presentation/pages/screens/manageuser/bloc/manage_users_screen.dart';
@@ -20,7 +22,10 @@ class TutorialScreen extends StatelessWidget {
         BlocProvider.of<AuthenticationBloc>(context).preferences;
     final _navigatorBloc = BlocProvider.of<NavigationBloc>(context);
     final username = prefs.get("username");
-    final _tutorialBloc = TutorialBloc();
+    final tutorialRepository = RepositoryProvider.of<TutorialRepository>(context);
+    final projectRepository = RepositoryProvider.of<ProjectRepository>(context);
+    final enrollementRepository = RepositoryProvider.of<EnrollementRepository>(context);
+    final _tutorialBloc = TutorialBloc(tutorialRepository,enrollementRepository);
     _tutorialBloc.add(LoadAllTutorials(0));
     final role = prefs.get("role");
     return BlocProvider<TutorialBloc>(
@@ -73,7 +78,7 @@ class TutorialScreen extends StatelessWidget {
                           IconButton(
                             onPressed: () async {
                               final res =
-                                  await TutorialRepository.deleteTutorial(
+                                  await tutorialRepository.deleteTutorial(
                                       tutorialId: state.tutorial.tutorialId!);
                               print(res);
                             },
@@ -128,7 +133,7 @@ class TutorialScreen extends StatelessWidget {
 
                 if (state is TutorialDetailState) {
                   return BlocProvider(
-                    create: (context) => ProjectBloc()..add(LoadTutorialEvent(state.tutorial.tutorialId)),
+                    create: (context) => ProjectBloc(tutorialRepository, projectRepository)..add(LoadTutorialEvent(state.tutorial.tutorialId)),
                     child: TutorialDetailScreen(
                       tutorialId: state.tutorial.tutorialId,
                     ),

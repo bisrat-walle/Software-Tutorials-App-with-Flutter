@@ -8,10 +8,11 @@ part 'update_profile_event.dart';
 part 'update_profile_state.dart';
 
 class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
-  UpdateProfileBloc() : super(UpdateProfileInitial()) {
+  final profileRepository;
+  UpdateProfileBloc(this.profileRepository) : super(UpdateProfileInitial()) {
     on<LoadUserProfileEvent>((event, emit) async {
       emit(UserProfileLoadingState());
-      final user = await ProfileRepository.getUserProfile();
+      final user = await profileRepository.getUserProfile();
       if (user != null){
         emit(UserProfileLoadedState(user));
       } else {
@@ -20,7 +21,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     },);
         on<AttemptProfileUpdateEvent>((event, emit) async {
       emit(UpdateProfileLoadingState());
-      final RepoResponse res = await ProfileRepository.updateProfile(
+      final RepoResponse res = await profileRepository.updateProfile(
         email: event.email,
         password: event.password,
         fullName: event.fullName,

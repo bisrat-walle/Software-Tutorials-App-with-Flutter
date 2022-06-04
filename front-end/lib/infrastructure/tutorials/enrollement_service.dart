@@ -1,20 +1,13 @@
-import 'package:flutter/physics.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http/http.dart';
-import 'dart:convert';
 
-import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
 
 
 String _baseUrl = "http://localhost:8080/api/v1/tutorials/";
 
-http.Client client = InterceptedClient.build(interceptors: [
-	TokenInterceptor(),
-]);
-
 class EnrollementRepository{
+  final client;
 
-	static Future<String?> enroll({required int tutorialId}) async {
+  EnrollementRepository(this.client);
+	Future<String?> enroll({required int tutorialId}) async {
 		try{
 			final response = await client.post(
 					Uri.parse(_baseUrl+tutorialId.toString()+"/enroll")
@@ -24,11 +17,11 @@ class EnrollementRepository{
 				return "Tutorial successfully enrolled";
 			}
 		} catch(e){
-			return "Unable to enroll";
 		}
+			return "Unable to enroll";
 	}
 
-	static Future<String?> unenroll({required int tutorialId}) async {
+	Future<String?> unenroll({required int tutorialId}) async {
 		try{
 			final response = await client.delete(
 					Uri.parse(_baseUrl+"enrolled/"+tutorialId.toString())
@@ -38,8 +31,8 @@ class EnrollementRepository{
 				return "Tutorial successfully unenrolled";
 			}
 		} catch(e){
-			return "Unable to unenroll";
 		}
+			return "Unable to unenroll";
 	}
 
 }

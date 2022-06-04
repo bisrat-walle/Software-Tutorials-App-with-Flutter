@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
@@ -10,10 +8,12 @@ part 'project_event.dart';
 part 'project_state.dart';
 
 class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
-  ProjectBloc() : super(ProjectInitial()) {
+  final TutorialRepository tutorialRepository;
+  final ProjectRepository projectRepository;
+  ProjectBloc(this.tutorialRepository, this.projectRepository) : super(ProjectInitial()) {
     on<LoadTutorialEvent>((event, emit) async {
       emit(TutorialFetching());
-      final tutorial = await TutorialRepository.getTutorial(event.tutorialId);
+      final tutorial = await tutorialRepository.getTutorial(event.tutorialId);
       final newState = SingleTutorialLoadedState();
       newState.message = event.message;
       newState.tutorial = tutorial;
@@ -21,9 +21,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     },);
     on<ProjectCreation>((event, emit) async {
       emit(ProjectSubmissionLoading());
-      final res = await ProjectRepository.createProject(tutorialId: event.tutorialId, projectUrl: event.projectUrl);
+      final res = await projectRepository.createProject(tutorialId: event.tutorialId, projectUrl: event.projectUrl);
       final newState = SingleTutorialLoadedState();
-      final tutorial = await TutorialRepository.getTutorial(event.tutorialId);
+      final tutorial = await tutorialRepository.getTutorial(event.tutorialId);
       newState.tutorial = tutorial;
      if (res){
         add(LoadTutorialEvent.withMessage(event.tutorialId, "Project Successfully Submitted"));
@@ -33,7 +33,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     });
     on<ProjectUpdate>((event, emit) async {
       emit(ProjectSubmissionLoading());
-      final res = await ProjectRepository.updateProject(tutorialId: event.tutorialId, projectUrl: event.projectUrl);
+      final res = await projectRepository.updateProject(tutorialId: event.tutorialId, projectUrl: event.projectUrl);
       if (res){
         add(LoadTutorialEvent.withMessage(event.tutorialId, "Project Successfully Updated"));
       } else {
@@ -42,7 +42,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     });
     on<ProjectDelete>((event, emit) async {
       emit(ProjectSubmissionLoading());
-      final res = await ProjectRepository.deleteProject(tutorialId: event.tutorialId);
+      final res = await projectRepository.deleteProject(tutorialId: event.tutorialId);
       if (res){
         add(LoadTutorialEvent.withMessage(event.tutorialId, "Project Successfully Deleted"));
       } else {

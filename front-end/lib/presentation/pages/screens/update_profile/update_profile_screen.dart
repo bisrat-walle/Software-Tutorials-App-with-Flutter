@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/profile_service.dart';
 import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
 import 'package:softwaretutorials/presentation/pages/screens/signup/bloc/signup_bloc.dart';
 import 'package:softwaretutorials/presentation/pages/screens/update_profile/bloc/update_profile_bloc.dart';
@@ -39,7 +40,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _updateProfileBloc = UpdateProfileBloc()..add(LoadUserProfileEvent());
+    final _updateProfileBloc = UpdateProfileBloc(RepositoryProvider.of<ProfileRepository>(context))..add(LoadUserProfileEvent());
     return SafeArea(
       child: Scaffold(
         // backgroundColor: Colors.transparent,

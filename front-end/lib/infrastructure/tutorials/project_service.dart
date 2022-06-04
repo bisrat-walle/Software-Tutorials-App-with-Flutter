@@ -1,19 +1,15 @@
-import 'package:flutter/physics.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http/http.dart';
 import 'dart:convert';
 
-import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
 
 String _baseUrl = "http://localhost:8080/api/v1/tutorials/";
 
-http.Client client = InterceptedClient.build(interceptors: [
-	TokenInterceptor(),
-]);
-
 class ProjectRepository{
 
-	static Future<bool> createProject({required int tutorialId, required String projectUrl}) async {
+  final client;
+
+  ProjectRepository(this.client);
+
+	Future<bool> createProject({required int tutorialId, required String projectUrl}) async {
 		try{
 			final response = await client.post(
 				Uri.parse(_baseUrl+tutorialId.toString()+"/project"),
@@ -33,7 +29,7 @@ class ProjectRepository{
 	}
 
 
-	static Future<bool> updateProject({required int tutorialId, required String projectUrl}) async {
+	Future<bool> updateProject({required int tutorialId, required String projectUrl}) async {
 		try{
 			final response = await client.put(
 				Uri.parse(_baseUrl+tutorialId.toString()+"/project"),
@@ -52,7 +48,7 @@ class ProjectRepository{
 		}
 	}
 
-	static Future<bool> deleteProject({required int tutorialId}) async {
+	Future<bool> deleteProject({required int tutorialId}) async {
 		try{
 			final response = await client.delete(
 				Uri.parse(_baseUrl+tutorialId.toString()+"/project"),

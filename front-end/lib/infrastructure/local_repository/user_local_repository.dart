@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:softwaretutorials/domain/core/models.dart';
 
-import 'local_database.dart';
+import 'local_data_provider.dart';
 
 class UserLocalRepository {
-  final dbProvider = TutorialDataProvider.dbProvider;
+  final dbProvider = LocalDataProvider.dbProvider;
 
   //Adds new User records
   Future<int> createUser(User user) async {
