@@ -25,10 +25,10 @@ public class Project implements Serializable{
     private Long projectId;
 
     
-    @Column(length = 50)
+    @Column(length = 200)
     private String title;
 
     
-    @Column(length = 1000)
+    @Column(length = 5000)
     private String problemStatement;
 }

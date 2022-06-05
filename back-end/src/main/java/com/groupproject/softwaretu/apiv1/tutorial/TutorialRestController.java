@@ -116,19 +116,19 @@ public class TutorialRestController {
     @PostMapping(path="/", consumes="application/json")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.CREATED)
-    public Tutorial createTutorial(@RequestBody Tutorial tutorial){
+    public TutorialRepresentationClient createTutorial(@RequestBody Tutorial tutorial){
         Project project = projectRepository.save(tutorial.getProject());
         User user = userService.getAuthenticatedUser();
         tutorial.setInstructor(user);
         tutorial.setProject(project);
-        return tutorialRepository.save(tutorial);
+        return new TutorialRepresentationClient(tutorialRepository.save(tutorial), enrollementService);
     }
 
 
     @PutMapping(path="/{tutorialId}", consumes="application/json")
     @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @ResponseStatus(HttpStatus.OK)
-    public Tutorial updateTutorial(@PathVariable ("tutorialId") Long tutorialId,
+    public TutorialRepresentationClient updateTutorial(@PathVariable ("tutorialId") Long tutorialId,
         @RequestBody Tutorial tutorial
     ){
         Tutorial oldTutorial = tutorialRepository.findByTutorialId(tutorialId);
@@ -137,7 +137,8 @@ public class TutorialRestController {
         projectRepository.save(oldTutorial.getProject());
         oldTutorial.setTitle(tutorial.getTitle());
         oldTutorial.setContent(tutorial.getContent());
-        return tutorialRepository.save(oldTutorial);
+        return new TutorialRepresentationClient(tutorialRepository.save(oldTutorial), enrollementService);
+        
     }
 
     @DeleteMapping(path="/{tutorialId}")
