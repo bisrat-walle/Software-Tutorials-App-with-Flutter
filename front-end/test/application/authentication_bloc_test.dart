@@ -14,7 +14,7 @@ import 'authentication_bloc_test.mocks.dart';
 void main() {
 
   SharedPreferences.setMockInitialValues({});
-	late final mockSharedPreferences;
+	late SharedPreferences mockSharedPreferences;
 	final mockAuthenticationRepository = MockAuthenticationRepository();
 
 	group('AuthenticationBloc', () {
@@ -31,7 +31,7 @@ void main() {
           .thenAnswer((_) async => Future.value(true));
        
      },
-      build: () => AuthenticationBloc(mockSharedPreferences, mockAuthenticationRepository),
+      build: () => AuthenticationBloc(mockSharedPreferences, mockAuthenticationRepository)..add(AuthenticationInitialEvent()),
       expect: () => [Loading(), Authenticated()],
     );
 	
@@ -44,7 +44,7 @@ void main() {
           .thenAnswer((_) async => Future.value(false));
        
      },
-      build: () => AuthenticationBloc(mockSharedPreferences, mockAuthenticationRepository),
+      build: () => AuthenticationBloc(mockSharedPreferences, mockAuthenticationRepository)..add(AuthenticationInitialEvent()),
       expect: () => [Loading(), UnAuthenticated()],
     );
 	});

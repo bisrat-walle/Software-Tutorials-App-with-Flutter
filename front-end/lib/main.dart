@@ -7,6 +7,7 @@ import 'package:softwaretutorials/infrastructure/auth/authentication_service.dar
 import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
 import 'package:softwaretutorials/infrastructure/local_repository/tutorial_local_repository.dart';
 import 'package:softwaretutorials/infrastructure/local_repository/user_local_repository.dart';
+import 'package:softwaretutorials/infrastructure/tutorials/enrollement_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/profile_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/project_service.dart';
@@ -21,24 +22,29 @@ Future<void> main() async {
   final SharedPreferences sharedPreferences = await SharedPreferences.getInstance(); // for storing role and token
   BlocOverrides.runZoned(
    () {
-     
-    final _authenticationBloc = AuthenticationBloc(sharedPreferences);
+     final tutorialLocalRepository = TutorialLocalRepository();
+    final userLocalRepository = UserLocalRepository();
+    final _interceptedClient = InterceptedClient.build(interceptors: [TokenInterceptor()]);
+	final _authenticationRepository = AuthenticationRepository(_interceptedClient, tutorialLocalRepository);
+    final _authenticationBloc = AuthenticationBloc(sharedPreferences, _authenticationRepository);
     _authenticationBloc.add(AuthenticationInitialEvent());
     final _navigationBloc = NavigationBloc(_authenticationBloc)..add(NavigationInitialEvent());
-     final _signinBloc = SigninBloc(_authenticationBloc);
+     final _signinBloc = SigninBloc(_authenticationBloc, _authenticationRepository);
     final _goRouter = TutorialGoRouter.get(_navigationBloc);
-    final _interceptedClient = InterceptedClient.build(interceptors: [TokenInterceptor()]);
+
+    
 
 
      runApp(
       MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<TutorialLocalRepository>(create: (context) => TutorialLocalRepository()),
-        RepositoryProvider<UserLocalRepository>(create: (context) => UserLocalRepository()),
-        RepositoryProvider<ProfileRepository>(create: (context) => ProfileRepository(_interceptedClient)),
-        RepositoryProvider<TutorialRepository>(create: (context) => TutorialRepository(_interceptedClient)),
-		    RepositoryProvider<ProjectRepository>(create: (context) => ProjectRepository(_interceptedClient)),
-        RepositoryProvider<AuthenticationRepository>(create: (context) => AuthenticationRepository()),
+        RepositoryProvider<TutorialLocalRepository>(create: (context) => tutorialLocalRepository),
+        RepositoryProvider<UserLocalRepository>(create: (context) => userLocalRepository),
+        RepositoryProvider<ProfileRepository>(create: (context) => ProfileRepository(_interceptedClient, userLocalRepository)),
+        RepositoryProvider<TutorialRepository>(create: (context) => TutorialRepository(_interceptedClient, tutorialLocalRepository)),
+		    RepositoryProvider<ProjectRepository>(create: (context) => ProjectRepository(_interceptedClient, tutorialLocalRepository)),
+        RepositoryProvider<AuthenticationRepository>(create: (context) => _authenticationRepository),
+        RepositoryProvider<EnrollementRepository>(create: (context) => EnrollementRepository(_interceptedClient, tutorialLocalRepository)),
       ],
       child: MultiBlocProvider(
         providers: [

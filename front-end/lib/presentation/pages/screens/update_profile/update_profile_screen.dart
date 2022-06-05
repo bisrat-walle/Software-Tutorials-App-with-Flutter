@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:softwaretutorials/domain/core/models.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/profile_service.dart';
@@ -67,7 +66,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 150),
+                  padding: EdgeInsets.only(top: 180),
                   child: Align(
                       alignment: Alignment.topCenter,
                       child: Text("Update Profile",
@@ -140,6 +139,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                                                           BorderRadius.circular(10)))),
                                                           SizedBox(height: 10),
                                                           TextFormField(
+                                                            readOnly: true,
                                                               controller: _usernameController,
                                                               validator: (value) {
                                                                 if (value == null ||
@@ -243,43 +243,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                                                       borderRadius:
                                                                       BorderRadius.circular(10))),),
                                                           SizedBox(height: 10),
-
-                                                          TextFormField(
-                                                            obscureText: true,
-                                                              controller: _newPasswordController,
-                                                              validator: (value) {
-                                                                if (value == null ||
-                                                                    value.isEmpty ||
-                                                                    value.length < 8) {
-                                                                  return "password is required and must be at least 8 chars";
-                                                                }
-                                                              },
-                                                              style: TextStyle(color: Colors.black),
-                                                              keyboardType: TextInputType.visiblePassword,
-                                                              decoration: InputDecoration(
-                                                                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                                                                  constraints: BoxConstraints(maxHeight: 60),
-                                                                  enabledBorder: OutlineInputBorder(
-                                                                      borderRadius:
-                                                                      BorderRadius.circular(10),
-                                                                      borderSide:
-                                                                      BorderSide(color: Colors.black)),
-                                                                  fillColor: Color(0xffC4C4C4).withOpacity(.5),
-                                                                  focusedBorder: OutlineInputBorder(
-                                                                      borderRadius:
-                                                                      BorderRadius.circular(10),
-                                                                      borderSide:
-                                                                      BorderSide(color: Colors.black)),
-                                                                  hintText: "New Password (if you want to change)",
-                                                                  filled: true,
-                                                                  suffixIcon: Icon(Icons.password_outlined),
-                                                                  hintStyle: TextStyle(color: Color(0xff000000)),
-                                                                  border: OutlineInputBorder(
-                                                                      borderRadius:
-                                                                      BorderRadius.circular(10))),),
-                                                          SizedBox(height: 10),
-                                                          
-                                                          Row(
+          Row(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 SizedBox(width: 10,),

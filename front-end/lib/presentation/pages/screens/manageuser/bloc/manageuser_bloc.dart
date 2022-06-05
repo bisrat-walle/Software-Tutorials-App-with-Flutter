@@ -2,12 +2,15 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/profile_service.dart';
+import 'package:softwaretutorials/presentation/pages/screens/tutorial/bloc/tutorial_bloc.dart';
+import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
 part 'manageuser_event.dart';
 part 'manageuser_state.dart';
 
 class ManageuserBloc extends Bloc<ManageuserEvent, ManageuserState> {
-  final profileRepository;
-  ManageuserBloc(this.profileRepository) : super(ManageUserScreenState()) {
+  final ProfileRepository profileRepository;
+  final TutorialBloc tutorialBloc;
+  ManageuserBloc(this.profileRepository, this.tutorialBloc) : super(ManageUserScreenState()) {
     on<GotoManageUserScreenEvent>((event, emit) async {
       // emit(ManageuserInitial());
       emit(ManageUserLoading());
@@ -18,12 +21,16 @@ class ManageuserBloc extends Bloc<ManageuserEvent, ManageuserState> {
       newState.userList = userList;
       emit(newState);
     });
-    // on<GotoManageUserScreenEvent>(
-    //  (event, emit) async {
-    //    emit(ManageuserLoading());
-    //    final userList = await ProfileRepository.getAllUsers();
-    //    emit(ManageuserLoaded(userList));
-    //  }, 
-    // );
+    on<DeleteUserEvent>(
+     (event, emit) async {
+       emit(ManageuserLoading());
+       final res = await profileRepository.deleteUser(event.username);
+        add(GotoManageUserScreenEvent());
+       if (res){
+         tutorialBloc.add(GotoManageUserEvent(1));
+       }
+       
+     }, 
+    );
   }
 }

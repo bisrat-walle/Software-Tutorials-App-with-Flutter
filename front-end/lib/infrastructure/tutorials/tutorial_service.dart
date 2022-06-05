@@ -1,19 +1,23 @@
-import 'package:flutter/physics.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http/http.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/domain/tutorials/tutorial.dart';
 import 'dart:convert';
 
-import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/tutorial_local_repository.dart';
 
-String _baseUrl = "http://localhost:8080/api/v1/tutorials/";
+
+String _baseUrl = "http://10.0.2.2:8080/api/v1/tutorials/";
 class TutorialRepository{
   final client;
+  late TutorialLocalRepository tutorialLocalRepository;
 
-  TutorialRepository(this.client);
+  TutorialRepository(this.client, this.tutorialLocalRepository);
   Future<List<Tutorial>> getAllTutorials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final alreadyFetched = prefs.get("tutorialFetched") != null;
+    if (alreadyFetched){
+      return tutorialLocalRepository.getAllTutorials();
+    }
+
     final response = await client.get(
       Uri.parse(_baseUrl+"all/c"),
     );
@@ -22,7 +26,10 @@ class TutorialRepository{
       Iterable response_body = jsonDecode(response.body);
       List<Tutorial> tutorialList = List<Tutorial>.from(
           response_body.map((tutorialItem) => Tutorial.fromJson(tutorialItem)));
-      print(tutorialList);
+      for (int i=0; i < tutorialList.length; i++){
+        tutorialLocalRepository.createTutorial(tutorialList[i]);
+      }
+      prefs.setString("tutorialFetched", "YES");
       return tutorialList;
     } else if (response.statusCode == 403){
 		throw Exception("Failed to load");
@@ -31,6 +38,14 @@ class TutorialRepository{
   }
 
   Future<Tutorial?> getTutorial(int tutorialId) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final alreadyFetched = prefs.get("tutorialFetched") != null;
+    if (alreadyFetched){
+      return tutorialLocalRepository.getTutorial(tutorialId);
+    }
+
+
     final response = await client.get(
       Uri.parse(_baseUrl+tutorialId.toString()),
     );
@@ -42,6 +57,20 @@ class TutorialRepository{
   }
   
    Future<List<Tutorial>> getEnrolledTutorials() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Tutorial> list = [];
+    final alreadyFetched = prefs.get("tutorialFetched") != null;
+    if (alreadyFetched){
+      final  allList = await tutorialLocalRepository.getAllTutorials();
+      for (int i=0; i < allList.length; i++){
+        if (allList[i].enrolled!){
+          list.add(allList[i]);
+        }
+      }
+      return list;
+    }
+
     final response = await client.get(
       Uri.parse(_baseUrl+"enrolled"),
     );
@@ -57,17 +86,27 @@ class TutorialRepository{
   }
   
   Future<List<Tutorial>> getMyTutorials() async {
-	print("trying to fetch my tutorials");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final username = prefs.get("username");
+    List<Tutorial> list = [];
+    final alreadyFetched = prefs.get("tutorialFetched") != null;
+    if (alreadyFetched){
+      final  allList = await tutorialLocalRepository.getAllTutorials();
+      for (int i=0; i < allList.length; i++){
+        if (allList[i].instructor!.username! == username){
+          list.add(allList[i]);
+        }
+      }
+      return list;
+    }
+
     final response = await client.get(
       Uri.parse(_baseUrl+"mytutorials"),
     );
-	print("My tutorials fetched with statusCode ${response.statusCode}");
     if (response.statusCode == 200){
-      print("my tutorials 200 status code");
       Iterable response_body = jsonDecode(response.body);
       List<Tutorial> tutorialList = List<Tutorial>.from(
           response_body.map((tutorialItem) => Tutorial.fromJson(tutorialItem)));
-      print(tutorialList);
       return tutorialList;
     } else if (response.statusCode == 403){
 		throw Exception("Failed to load");
@@ -94,6 +133,7 @@ class TutorialRepository{
       );
 
       if (response.statusCode == 201) {
+        await tutorialLocalRepository.createTutorial(Tutorial.fromJson(jsonDecode(response.body)));
         return true;
       } else if (response.statusCode == 403){
 		throw Exception("Failed to load");
@@ -122,7 +162,8 @@ class TutorialRepository{
           }
         }),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
+        await tutorialLocalRepository.updateTutorial(Tutorial.fromJson(jsonDecode(response.body)));
         return true;
       } else if (response.statusCode == 403){
 		throw Exception("Failed to load");
@@ -140,6 +181,7 @@ class TutorialRepository{
       );
 
       if (response.statusCode == 204) {
+        await tutorialLocalRepository.deleteTutorial(tutorialId);
         return true;
       } else if (response.statusCode == 403){
 		throw Exception("Failed to load");

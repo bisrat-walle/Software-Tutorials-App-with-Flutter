@@ -75,7 +75,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 150),
+                  padding: EdgeInsets.only(top: 180),
                   child: Align(
                       alignment: Alignment.topCenter,
                       child: Text("Sign Up",

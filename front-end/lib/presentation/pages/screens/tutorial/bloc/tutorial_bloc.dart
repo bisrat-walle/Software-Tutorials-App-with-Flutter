@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
 import 'package:softwaretutorials/domain/tutorials/tutorial_form_model.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/tutorial_local_repository.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/enrollement_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
 
@@ -11,7 +12,9 @@ part 'tutorial_state.dart';
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final TutorialRepository tutorialRepository;
   final EnrollementRepository enrollementRepository;
-  TutorialBloc(this.tutorialRepository, this.enrollementRepository) : super(TutorialLoadingState(0)) {
+  final TutorialLocalRepository tutorialLocalRepository;
+  TutorialBloc(this.tutorialRepository, this.tutorialLocalRepository, this.enrollementRepository) : super(TutorialLoadingState(0)) {
+    
     on<GotoManageUserEvent>(
       (event, emit) {
         final newState = ManageUser(event.selectedTab);
@@ -40,7 +43,9 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     });
     on<LoadMyTutorials>((event, emit) async {
       emit(TutorialLoadingState(event.selectedTab));
-      final tutorialList = await tutorialRepository.getMyTutorials();
+      final List<Tutorial> tutorialList;
+        tutorialList = await tutorialRepository.getMyTutorials();
+        tutorialList.map((tutorial) => tutorialLocalRepository.createTutorial(tutorial));
       final newState = MyTutorialsLoadedState(tutorialList, event.selectedTab);
       newState.message = event.message;
       emit(newState);
@@ -106,7 +111,12 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         problemStatement: event.tutorialForm.problemStatementController.text,
         projectTitle: event.tutorialForm.projectTitleController.text,
       );
-      add(LoadMyTutorials(1));
+      final newState = LoadMyTutorials(1);
+      if (res){
+      newState.message = "Tutorial Successfully Created";
+      add(newState);
+
+      }
     });
     on<UpdateTutorialEvent>(
       (event, emit) async {

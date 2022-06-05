@@ -1,15 +1,20 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/domain/auth/login_response.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/tutorial_local_repository.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/user_local_repository.dart';
 
 
-String _baseUrl = "http://localhost:8080/api/v1/login";
+String _baseUrl = "http://10.0.2.2:8080/api/v1/login";
 class AuthenticationRepository {
-  static 
+
+  final client;
+  final TutorialLocalRepository tutorialLocalRepository;
+  AuthenticationRepository(this.client, this.tutorialLocalRepository);
+  
   Future<bool> authenticateUser({String? username, String? password}) async {
     try{
-      final response = await http.post(
+      final response = await client.post(
       Uri.parse(_baseUrl),
       headers: <String, String>{
         'Content-Type': 'application/json',
@@ -36,21 +41,24 @@ class AuthenticationRepository {
     }
   }
 
-  static Future<bool> getLoginStatus() async{
+  Future<bool> getLoginStatus() async{
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("token") != null;
   }
 
-  static persistToken(token) async {
+  persistToken(token) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.setString("token", token);
   }
 
-  static logout() async {
+  logout() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove("token");
-    prefs.remove("username");
-    prefs.remove("role");
+    await prefs.remove("token");
+    await prefs.remove("username");
+    await prefs.remove("role");
+    await prefs.remove("tutorialFetched");
+    await prefs.remove("usersFetched");
+    await tutorialLocalRepository.removeTables();
     return true;
   }
 

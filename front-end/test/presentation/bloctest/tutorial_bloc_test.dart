@@ -30,10 +30,7 @@ void main() {
    group('TutorialBloc', () {
     blocTest<TutorialBloc, TutorialState>(
       'emits [] when nothing is added',
-     setUp:() async {
-       prefs = await SharedPreferences.getInstance();
-     },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       expect: () => [],
     );
 
@@ -42,7 +39,7 @@ void main() {
      setUp:() {
        
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(GotoManageUserEvent(0)),
       expect: () => [ManageUser(0)],
     );
@@ -52,7 +49,7 @@ void main() {
      setUp:() {
        
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(GotoTutorialDetailEvent(tutorial, 0)),
       expect: () => [TutorialDetailState(tutorial, 0)],
     );
@@ -62,7 +59,7 @@ void main() {
      setUp:() {
        
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(GotoCreateTutorialEvent(0)),
       expect: () => [CreateTutorialState(TutorialFormModel.empty(), 0)],
     );
@@ -72,7 +69,7 @@ void main() {
      setUp:() {
        when(mockTutorialRepository.getAllTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(LoadAllTutorials(0)),
       expect: () => [TutorialLoadingState(0), AllTutorialsLoadedState([tutorial, tutorial, tutorial], 0)],
     );
@@ -82,7 +79,7 @@ void main() {
      setUp:() {
        when(mockTutorialRepository.getMyTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(LoadMyTutorials(0)),
       expect: () => [TutorialLoadingState(0), MyTutorialsLoadedState([tutorial, tutorial, tutorial], 0)],
     );
@@ -92,7 +89,7 @@ void main() {
      setUp:() {
        when(mockTutorialRepository.getEnrolledTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(LoadEnrolledTutorials(0)),
       expect: () => [TutorialLoadingState(0), EnrolledTutorialsLoaded([tutorial, tutorial, tutorial], 0)],
     );
@@ -104,7 +101,7 @@ void main() {
      when(mockTutorialRepository.getAllTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(DeleteTutorialEvent(1, 0)),
       expect: () => [TutorialLoadingState(0), AllTutorialsLoadedState([tutorial, tutorial, tutorial], 0)],
     );
@@ -116,7 +113,7 @@ void main() {
      when(mockTutorialRepository.getAllTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(EnrollTutorialEvent(1, 0)),
       expect: () => [TutorialLoadingState(0), AllTutorialsLoadedState([tutorial, tutorial, tutorial], 0)],
     );
@@ -128,7 +125,7 @@ void main() {
      when(mockTutorialRepository.getAllTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(UnEnrollTutorialEvent(1, 0)),
       expect: () => [TutorialLoadingState(0), AllTutorialsLoadedState([tutorial, tutorial, tutorial], 0)],
     );
@@ -142,7 +139,7 @@ void main() {
      when(mockTutorialRepository.getAllTutorials()).thenAnswer((realInvocation) => Future.value([tutorial, tutorial, tutorial]));
      
      },
-      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository, prefs),
+      build: () => TutorialBloc(mockTutorialRepository, mockLocalRepository, mockEnrollementRepository),
       act: (bloc) => bloc.add(GotoUpdateTutorialEvent(TutorialFormModel.fromTutorial(tutorial), 0)),
       expect: () => [UpdateTutorialState(TutorialFormModel.fromTutorial(tutorial), 2)],
     );

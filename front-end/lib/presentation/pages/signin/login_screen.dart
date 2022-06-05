@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
 import 'package:softwaretutorials/presentation/pages/signin/bloc/signin_bloc.dart';
 import 'package:softwaretutorials/presentation/routes/bloc/navigation_bloc.dart';
@@ -25,12 +21,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
-    BlocProvider.of<SigninBloc>(context).add(NormalEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<SigninBloc>(context).add(NormalEvent());
     final _signinBloc = BlocProvider.of<SigninBloc>(context);
     final _navigationBloc = BlocProvider.of<NavigationBloc>(context); 
         return SafeArea(
@@ -53,8 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       left: 0,
                       right: 0,
                       child: Container(
-                        height: 300,
-                        decoration: BoxDecoration(
+                        height: 350,
+                        decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
@@ -70,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Column(
                                     children: [
                                       SizedBox(height: 10),
-                                      Text("Use 'admin' both as username and password to login as ADMIN", style: TextStyle(fontSize: 15, color: Colors.purple),),
+                                      Text("Use 'admin' both as username and password to login as ADMIN", textAlign: TextAlign.center, style:TextStyle(fontSize: 15, color: Colors.purple),),
                                       SizedBox(height: 10),
                                       Container(
                                         constraints:
@@ -158,9 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                       _navigationBloc.add(
                                                           GotoAllTutorials());
                                                     }
-                                                    if (state is Loading)
-                                                      return Text(
+                                                    if (state is Loading) {
+                                                      return const Text(
                                                           "Logging in ...");
+                                                    }
                                                     return const Text("Login");
                                                   },
                                                 ),

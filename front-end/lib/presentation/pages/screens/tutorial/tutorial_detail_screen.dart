@@ -5,11 +5,11 @@ import 'package:softwaretutorials/application/auth/authentication/bloc/authentic
 import 'package:softwaretutorials/domain/tutorials/project_form_model.dart';
 import 'package:softwaretutorials/presentation/pages/components/custom_snack_bar.dart';
 import 'package:softwaretutorials/presentation/pages/screens/project_submission/bloc/project_bloc.dart';
+import 'package:softwaretutorials/presentation/pages/screens/tutorial/bloc/tutorial_bloc.dart';
 
 class TutorialDetailScreen extends StatefulWidget {
-  final tutorialId;
 
-  TutorialDetailScreen({Key? key, required this.tutorialId}) : super(key: key);
+  TutorialDetailScreen({Key? key}) : super(key: key);
 
   @override
   State<TutorialDetailScreen> createState() => _TutorialDetailScreenState();
@@ -67,6 +67,7 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
   @override
   Widget build(BuildContext context) {
     projectBloc = BlocProvider.of<ProjectBloc>(context);
+    final tutorialBloc = BlocProvider.of<TutorialBloc>(context);
     return BlocConsumer<ProjectBloc, ProjectState>(
       listener: (context, state) {
         if (state.message != "") {
@@ -118,9 +119,15 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                               ),
                               margin: EdgeInsets.only(bottom: 10),
                               width: double.infinity,
-                              child: Text("Enjoy your tutorial!",
-                                  style:
-                                      Theme.of(context).textTheme.headline2)),
+                              child: Column(
+                                children: [
+                                  Text("Enjoy your tutorial!",
+                                      style:
+                                          Theme.of(context).textTheme.headline2),
+                                  if (prefs!.get("role") == "CLIENT")
+                                  Text("Scroll down to the bottom to see and submit, edit, update or delete project", textAlign: TextAlign.center,)
+                                ],
+                              )),
                           Text(projectBloc.state.tutorial!.content!),
                         ],
                       ),
@@ -189,7 +196,7 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                                               cursorColor: Colors.black,
                                               decoration: const InputDecoration(
                                                 hintText:
-                                                    'E.g https://github.com/username/reponame',
+                                                    'E.g https://github.com/us/re',
                                                 enabledBorder:
                                                     UnderlineInputBorder(
                                                   borderSide: BorderSide(
@@ -232,7 +239,9 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                                                                     .tutorialId!,
                                                                 _projectForm.projectLinkController
                                                                     .text));
+                                                        tutorialBloc.add(GotoTutorialDetailEvent(tutorial, tutorialBloc.state.selectedTab));
                                                       }
+                                                      
                                                     },
                                                     style: ElevatedButton.styleFrom(
                                                         primary: Colors.blue,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/application/auth/authentication/bloc/authentication_bloc.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/tutorial_local_repository.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/enrollement_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/project_service.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
@@ -25,7 +26,8 @@ class TutorialScreen extends StatelessWidget {
     final tutorialRepository = RepositoryProvider.of<TutorialRepository>(context);
     final projectRepository = RepositoryProvider.of<ProjectRepository>(context);
     final enrollementRepository = RepositoryProvider.of<EnrollementRepository>(context);
-    final _tutorialBloc = TutorialBloc(tutorialRepository,enrollementRepository);
+    final tutorialLocalRepository = RepositoryProvider.of<TutorialLocalRepository>(context);
+    final _tutorialBloc = TutorialBloc(tutorialRepository, tutorialLocalRepository, enrollementRepository);
     _tutorialBloc.add(LoadAllTutorials(0));
     final role = prefs.get("role");
     return BlocProvider<TutorialBloc>(
@@ -135,7 +137,6 @@ class TutorialScreen extends StatelessWidget {
                   return BlocProvider(
                     create: (context) => ProjectBloc(tutorialRepository, projectRepository)..add(LoadTutorialEvent(state.tutorial.tutorialId)),
                     child: TutorialDetailScreen(
-                      tutorialId: state.tutorial.tutorialId,
                     ),
                   );
                 }

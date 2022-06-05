@@ -27,6 +27,21 @@ class _TutorialListViewState extends State<TutorialListView> {
 		BlocBuilder<TutorialBloc, TutorialState>(
       builder: (context, state) {
         if (state is TutorialLoadedState){
+          if (state.tutorialList.isEmpty)
+            return Center(
+              child:
+                 Container(
+                    constraints: BoxConstraints(maxWidth: 600, minWidth: 450),
+                    height: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Hey, ", style: Theme.of(context).textTheme.headline3,),
+                        Text("No tutorials yet, stay tuned!", style: Theme.of(context).textTheme.headline2,),
+                      ],
+                    ),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10))),
+                  );
           return ListView.separated(
 						itemCount: state.tutorialList.length,
 						itemBuilder: (BuildContext context, int index) {

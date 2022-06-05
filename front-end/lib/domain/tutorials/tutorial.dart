@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 import '../core/models.dart';
@@ -22,6 +24,7 @@ class Tutorial extends Equatable{
 		if (json == null){
 			return Tutorial();
 		}
+    print(json.toString());
 		return Tutorial(
 		  tutorialId: json['tutorialId'],
 		  title: json['title'],
@@ -38,12 +41,37 @@ class Tutorial extends Equatable{
         "tutorialId": this.tutorialId,
         "title": this.title,
         "content": this.content,
-        "submittedLInk": this.submittedLink,
-        "enrolled": this.enrolled,
+        "submittedLink": this.submittedLink,
+        "enrolled": this.enrolled! ? 1:0,
+        "enrollementCount": this.enrollementCount,
+        "instructor": jsonEncode(this.instructor!.toJson()),
+        "project": jsonEncode(this.project!.toJson())
+      };
+  Map<String, dynamic> toMockJson() => {
+        "tutorialId": this.tutorialId,
+        "title": this.title,
+        "content": this.content,
+        "submittedLink": this.submittedLink,
+        "enrolled": this.enrolled!,
         "enrollementCount": this.enrollementCount,
         "instructor": this.instructor!.toJson(),
         "project": this.project!.toJson()
       };
+factory Tutorial.fromSqliteJson(Map<String, dynamic?>? json) {
+		if (json == null){
+			return Tutorial();
+		}
+		return Tutorial(
+		  tutorialId: json['tutorialId'],
+		  title: json['title'],
+		  enrolled: json['enrolled'] == 1,
+		  content: json['content'],
+		  submittedLink: json['submittedLink'],
+		  instructor: User.fromJson(jsonDecode(json['instructor'])),
+		  project: Project.fromJson(jsonDecode(json['project'])),
+			enrollementCount: json['enrollementCount']
+		);
+    }
 
   @override
   List<Object?> get props => [tutorialId];

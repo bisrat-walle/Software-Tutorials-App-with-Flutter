@@ -9,13 +9,14 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
 
   final SharedPreferences preferences;
+  final AuthenticationRepository authenticationRepository;
 
-  AuthenticationBloc(this.preferences) : super(AuthenticationInitial()) {
+  AuthenticationBloc(this.preferences, this.authenticationRepository) : super(AuthenticationInitial()) {
     on<AuthenticationEvent>((event, emit) async {
 
       if (event is AuthenticationInitialEvent){
         emit(Loading());
-        final res = await AuthenticationRepository.getLoginStatus();
+        final res = await authenticationRepository.getLoginStatus();
         if (res){
           emit(Authenticated());
         } else {
@@ -25,13 +26,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       if (event is LoggedIn){
         emit(Loading());
-        final res = await AuthenticationRepository.persistToken(event.token);
+        final res = await authenticationRepository.persistToken(event.token);
         emit(Authenticated());
       } 
 
       if (event is LoggedOut){
         emit(Loading());
-        final res = await AuthenticationRepository.logout();
+        final res = await authenticationRepository.logout();
         emit(UnAuthenticated());
       }
     });

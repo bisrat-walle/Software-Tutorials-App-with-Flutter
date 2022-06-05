@@ -39,7 +39,7 @@ class CustomDrawer{
                         const Text("Ethio Software Tutorial"),
                         const SizedBox(height: 20,),
                         Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("username").toString()),
-                        Text("User: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("Role").toString(), style: const TextStyle(fontSize: 13),)
+                        Text("Role: "+BlocProvider.of<AuthenticationBloc>(context).preferences.get("role").toString(), style: const TextStyle(fontSize: 13),)
                       ],
                     )
                   ],
@@ -66,8 +66,8 @@ class CustomDrawer{
                   ),
                   onPressed: () {
                     
-				BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
         BlocProvider.of<NavigationBloc>(context).add(GotoSignin());
+				BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
                   },
                 ),
                 leading: const Icon(Icons.logout)),

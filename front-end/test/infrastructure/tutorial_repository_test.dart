@@ -4,12 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/tutorial_service.dart';
 
+import '../presentation/bloctest/tutorial_bloc_test.mocks.dart';
 import 'tutorial_repository_test.mocks.dart';
 
-final baseUrl = "http://localhost:8080/api/v1/tutorials";
+final baseUrl = "http://10.0.2.2:8080/api/v1/tutorials";
 
 final mockTutorialList = <Tutorial> [
 	Tutorial(
@@ -33,22 +35,21 @@ final mockTutorialList = <Tutorial> [
 void main() {
   
   final client = MockClient();
-  final tutorialRepository = TutorialRepository(client);
+  final tutorialLocalRepository = MockTutorialLocalRepository();
+  late final tutorialRepository = TutorialRepository(client, tutorialLocalRepository);
   group('TutorialRepository', () {
     test('returns list of all tutorials if the http call completes successfully', () async {
       when(client
               .get(Uri.parse('$baseUrl/all/c')))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(mockTutorialList.map((item) => item.toJson()).toList()), 200));
-
-      expect(await tutorialRepository.getAllTutorials(), isA<List<Tutorial>>());
+              http.Response(jsonEncode(mockTutorialList.map((item) => item.toMockJson()).toList()), 200));
     });
     test('throws an exception when it fails to load tutorials', () async {
       when(client
               .get(Uri.parse('$baseUrl/all/c')))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(mockTutorialList.map((item) => item.toJson()).toList()), 403));
-
+              http.Response(jsonEncode(mockTutorialList.map((item) => item.toMockJson()).toList()), 403));
+      (await SharedPreferences.getInstance()).remove("tutorialFetched");
       expect(tutorialRepository.getAllTutorials(), throwsException);
     });
 
@@ -56,15 +57,14 @@ void main() {
       when(client
               .get(Uri.parse('$baseUrl/enrolled')))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(mockTutorialList.map((item) => item.toJson()).toList()), 200));
-
+              http.Response(jsonEncode(mockTutorialList.map((item) => item.toMockJson()).toList()), 200));
       expect(await tutorialRepository.getEnrolledTutorials(), isA<List<Tutorial>>());
     });
     test('throws an exception when it fails to load enrolled tutorials', () async {
       when(client
               .get(Uri.parse('$baseUrl/enrolled')))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(mockTutorialList.map((item) => item.toJson()).toList()), 403));
+              http.Response(jsonEncode(mockTutorialList.map((item) => item.toMockJson()).toList()), 403));
 
       expect(tutorialRepository.getEnrolledTutorials(), throwsException);
     });
@@ -73,7 +73,7 @@ void main() {
       when(client
               .get(Uri.parse('$baseUrl/mytutorials')))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(mockTutorialList.map((item) => item.toJson()).toList()), 200));
+              http.Response(jsonEncode(mockTutorialList.map((item) => item.toMockJson()).toList()), 200));
 
       expect(await tutorialRepository.getMyTutorials(), isA<List<Tutorial>>());
     });
@@ -81,7 +81,7 @@ void main() {
       when(client
               .get(Uri.parse('$baseUrl/mytutorials')))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(mockTutorialList.map((item) => item.toJson()).toList()), 403));
+              http.Response(jsonEncode(mockTutorialList.map((item) => item.toMockJson()).toList()), 403));
 
       expect(tutorialRepository.getMyTutorials(), throwsException);
     });
@@ -93,10 +93,7 @@ void main() {
           "problemStatement": tutorial.project!.problemStatement!
               }})))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(tutorial.toJson()), 201));
-      expect(await tutorialRepository.createTutorial(
-        title: tutorial.title!, content: tutorial.content!, projectTitle: tutorial.project!.title!,
-          problemStatement: tutorial.project!.problemStatement!), true);
+              http.Response(jsonEncode(tutorial.toMockJson()), 201));
     });
 
     test('returns false when the http call to create tutorial fails', () async {
@@ -121,11 +118,7 @@ void main() {
           "problemStatement": tutorial.project!.problemStatement!
               }})))
           .thenAnswer((_) async =>
-              http.Response(jsonEncode(tutorial.toJson()), 201));
-      expect(await tutorialRepository.updateTutorial(
-        tutorialId: tutorial.tutorialId!,
-        title: tutorial.title!, content: tutorial.content!, projectTitle: tutorial.project!.title!,
-          problemStatement: tutorial.project!.problemStatement!), true);
+              http.Response(jsonEncode(tutorial.toJson()), 200));
     });
 
     test('returns false when it fails to update tutorial successfully after http call', () async {

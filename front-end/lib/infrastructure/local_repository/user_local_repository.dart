@@ -6,15 +6,14 @@ import 'local_data_provider.dart';
 class UserLocalRepository {
   final dbProvider = LocalDataProvider.dbProvider;
 
-  //Adds new User records
+  
   Future<int> createUser(User user) async {
     final db = await dbProvider.database;
     var result = db.insert(userTable, user.toJson());
     return result;
   }
 
-  //Get All Users
-  //Searches if query string was passed
+  
   Future<List<User>> getAllUsers() async {
     final db = await dbProvider.database;
 
@@ -25,8 +24,8 @@ class UserLocalRepository {
     return users;
   }
 
-  //Update Todo record
-  Future<int> updateTodo(User user) async {
+ 
+  Future<int> updateUser(User user) async {
     final db = await dbProvider.database;
 
     var result = await db.update(userTable, user.toJson(),
@@ -35,11 +34,18 @@ class UserLocalRepository {
     return result;
   }
 
-  //Delete Todo records
-  Future<int> deleteTodo(int id) async {
+  Future<User> getUser(String username) async {
     final db = await dbProvider.database;
-    var result = await db.delete(userTable, where: 'id = ?', whereArgs: [id]);
+    var result = await db.query(userTable, where: 'username = ?', whereArgs: [username]);
+    final user = User.fromJson(result.first);
+    return user;
+  }
 
+  
+  Future<int> deleteUser(String username) async {
+    final db = await dbProvider.database;
+    var result = await db.delete(userTable, where: 'username = ?', whereArgs: [username]);
+    
     return result;
   }
 }

@@ -1,19 +1,19 @@
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http/http.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/domain/auth/repo_response.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
 import 'dart:convert';
 
-import 'package:softwaretutorials/infrastructure/core/token_interceptor.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/user_local_repository.dart';
 
 
-String _baseUrl = "http://localhost:8080/api/v1/";
+String _baseUrl = "http://10.0.2.2:8080/api/v1/";
 
 class ProfileRepository{
   final client;
+  final UserLocalRepository userLocalRepository;
 
-  ProfileRepository(this.client);
+  ProfileRepository(this.client, this.userLocalRepository);
   Future<RepoResponse> signup({required String email,required String username, required fullName, required String password, required String role}) async {
     final response = await client.post(
         Uri.parse(_baseUrl+"register"),
@@ -64,6 +64,14 @@ class ProfileRepository{
   }
 
   Future<List<User>> getAllUsers() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final alreadyFetched = prefs.get("usersFetched") != null;
+
+    if (alreadyFetched){
+      return await userLocalRepository.getAllUsers();
+    }
+
     final response = await client.get(
         Uri.parse(_baseUrl+"users/"),
     );
@@ -72,16 +80,21 @@ class ProfileRepository{
       Iterable response_body = jsonDecode(response.body);
       List<User> userList = List<User>.from(
           response_body.map((user) => User.fromJson(user)));
+      for (int i=0; i < userList.length; i++){
+        await userLocalRepository.createUser(userList[i]);
+      }
+       prefs.setString("usersFetched", "YES");
       return userList;
     }
     return [];
   }
 
-  Future<bool> deleteUser(int userId) async {
+  Future<bool> deleteUser(String username) async {
     final response = await client.delete(
-      Uri.parse(_baseUrl+"users/"+userId.toString())
+      Uri.parse(_baseUrl+"users/"+username)
     );
-    if (response.statusCode == 204){
+    if (response.statusCode == 200){
+      await userLocalRepository.deleteUser(username);
       return true;
     }
     return false;

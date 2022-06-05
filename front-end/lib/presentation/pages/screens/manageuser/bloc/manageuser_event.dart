@@ -8,4 +8,7 @@ abstract class ManageuserEvent extends Equatable {
 }
 
 class GotoManageUserScreenEvent extends ManageuserEvent {}
-class DeleteUserEvent extends ManageuserEvent {}
+class DeleteUserEvent extends ManageuserEvent {
+  String username = "";
+  DeleteUserEvent(this.username);
+}

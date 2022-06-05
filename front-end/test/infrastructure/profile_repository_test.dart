@@ -5,23 +5,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softwaretutorials/domain/auth/repo_response.dart';
 import 'package:softwaretutorials/domain/core/models.dart';
+import 'package:softwaretutorials/infrastructure/local_repository/user_local_repository.dart';
 import 'package:softwaretutorials/infrastructure/tutorials/profile_service.dart';
 
+import 'profile_repository_test.mocks.dart';
 import 'tutorial_repository_test.mocks.dart';
 
 
-final baseUrl = "http://localhost:8080/api/v1";
+final baseUrl = "http://10.0.2.2:8080/api/v1";
 
-
+@GenerateMocks([UserLocalRepository])
 void main() {
   
   final client = MockClient();
-  final profileRepository = ProfileRepository(client);
+  final mockUserLocalRepository = MockUserLocalRepository();
+  final profileRepository = ProfileRepository(client, mockUserLocalRepository);
   group('ProfileRepository', () {
     final tutorialId = 1;
-    final userId = 1;
+    final userId = "username";
     final userJson = jsonEncode(<String, dynamic>{
           'username': "username",
           'password': "password",
@@ -39,7 +43,7 @@ void main() {
       when(client
               .post(Uri.parse('$baseUrl/register'), body: userJson, headers: <String, String>{
           'Content-Type': 'application/json',
-          'accept': '*/*'
+          'accept': '*/*',
         },))
           .thenAnswer((_) async =>
               http.Response(userJson, 201));
@@ -97,11 +101,12 @@ void main() {
     });
 
 
-        test('returns true after successfully deleting user', () async {
+    test('returns true after successfully deleting user', () async {
       when(client
               .delete(Uri.parse('$baseUrl/users/$userId')))
           .thenAnswer((_) async =>
-              http.Response(userJson, 204));
+              http.Response(userJson, 200));
+      when(mockUserLocalRepository.deleteUser("username")).thenAnswer((realInvocation) => Future.value(1));
       final user = User.fromJson(jsonDecode(userJson));
       expect(await profileRepository.deleteUser(userId), true);
     });
@@ -118,6 +123,9 @@ void main() {
               .get(Uri.parse('$baseUrl/users/')))
           .thenAnswer((_) async =>
               http.Response(jsonEncode([userJson, userJson, userJson].map((user) => User.fromJson(jsonDecode(user))).toList()), 200));
+      when(mockUserLocalRepository.getAllUsers()).thenAnswer((realInvocation) => Future.value([User(), User(), User()]));
+      SharedPreferences.setMockInitialValues({"usersFetched":"YES"});
+      
       final user = User.fromJson(jsonDecode(userJson));
       final res = await profileRepository.getAllUsers();
       expect(res, isA<List<User>>());

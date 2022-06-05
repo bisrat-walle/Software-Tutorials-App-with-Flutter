@@ -12,15 +12,16 @@ final userId = "id";
 
 class LocalDataProvider {
   static final LocalDataProvider dbProvider = LocalDataProvider();
-  late Database _database;
+  static Database? _database;
   Future<Database> get database async {
-    if (_database != null) return _database;
+    if (_database != null) return _database!;
     _database = await createDatabase();
-    return _database;
+    return _database!;
   }
   createDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "tutorial.db");
+    String path = join(documentsDirectory.path, "tutorial1.db");
+    Sqflite.setDebugModeOn(true);
     var database = await openDatabase(path,
         version: 1, onCreate: initDB);
     return database;
@@ -32,11 +33,11 @@ class LocalDataProvider {
         "$tutorialId INTEGER PRIMARY KEY, "
         "title TEXT, "
         "content TEXT, "
-        "submittedLInk TEXT, "
+        "submittedLink TEXT, "
         "instructor TEXT, "
         "project TEXT, "
         "enrolled INTEGER, "
-        "enrollementCount INTEGER, "
+        "enrollementCount INTEGER "
         ")");
     await database.execute("CREATE TABLE $userTable ("
         "$userId INTEGER PRIMARY KEY, "
@@ -44,7 +45,7 @@ class LocalDataProvider {
         "email TEXT, "
         "fullName TEXT, "
         "instructor TEXT, "
-        "role TEXT, "
+        "role TEXT "
         ")");
   }
 }
