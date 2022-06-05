@@ -21,6 +21,7 @@ void main() {
       expect: () => [UserProfileLoadingState(), UserProfileLoadedState(user)],
     );
 	
+  
 	blocTest<UpdateProfileBloc, UpdateProfileState>(
       'emits [UserProfileLoadingState(), UpdateProfileErrorState()] when LoadUserProfileEvent is added and fails',
      setUp:() {
