@@ -10,7 +10,8 @@ part 'manageuser_state.dart';
 class ManageuserBloc extends Bloc<ManageuserEvent, ManageuserState> {
   final ProfileRepository profileRepository;
   final TutorialBloc tutorialBloc;
-  ManageuserBloc(this.profileRepository, this.tutorialBloc) : super(ManageUserScreenState()) {
+  ManageuserBloc(this.profileRepository, this.tutorialBloc)
+      : super(ManageUserScreenState()) {
     on<GotoManageUserScreenEvent>((event, emit) async {
       // emit(ManageuserInitial());
       emit(ManageUserLoading());
@@ -22,15 +23,14 @@ class ManageuserBloc extends Bloc<ManageuserEvent, ManageuserState> {
       emit(newState);
     });
     on<DeleteUserEvent>(
-     (event, emit) async {
-       emit(ManageuserLoading());
-       final res = await profileRepository.deleteUser(event.username);
+      (event, emit) async {
+        emit(ManageuserLoading());
+        final res = await profileRepository.deleteUser(event.username);
         add(GotoManageUserScreenEvent());
-       if (res){
-         tutorialBloc.add(GotoManageUserEvent(1));
-       }
-       
-     }, 
+        if (res) {
+          tutorialBloc.add(GotoManageUserEvent(1));
+        }
+      },
     );
   }
 }

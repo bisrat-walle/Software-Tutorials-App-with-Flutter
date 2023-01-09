@@ -7,7 +7,7 @@ class TokenInterceptor implements InterceptorContract {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       data.headers["Content-Type"] = "application/json";
-      data.headers["Authorization"] = "Bearer "+prefs.get("token").toString();
+      data.headers["Authorization"] = "Bearer " + prefs.get("token").toString();
       data.headers["Accept"] = '*/*';
     } catch (e) {
       print(e);

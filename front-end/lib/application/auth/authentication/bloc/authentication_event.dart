@@ -7,11 +7,10 @@ abstract class AuthenticationEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoggedIn extends AuthenticationEvent{
+class LoggedIn extends AuthenticationEvent {
   final token;
 
   LoggedIn(this.token);
-
 }
 
 class AuthenticationInitialEvent extends AuthenticationEvent {}

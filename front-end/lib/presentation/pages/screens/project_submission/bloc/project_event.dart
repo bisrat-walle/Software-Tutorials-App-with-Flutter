@@ -11,7 +11,7 @@ abstract class ProjectEvent extends Equatable {
 
 class LoadTutorialEvent extends ProjectEvent {
   LoadTutorialEvent(tutorialId) : super(tutorialId);
-  factory LoadTutorialEvent.withMessage(tutorialId, String message){
+  factory LoadTutorialEvent.withMessage(tutorialId, String message) {
     final state = LoadTutorialEvent(tutorialId);
     state.message = message;
     return state;
@@ -35,7 +35,5 @@ class ProjectUpdate extends ProjectEvent {
 }
 
 class ProjectDelete extends ProjectEvent {
-
   ProjectDelete(int tutorialId) : super(tutorialId);
 }
-

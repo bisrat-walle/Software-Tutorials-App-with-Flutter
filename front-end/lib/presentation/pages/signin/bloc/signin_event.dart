@@ -14,6 +14,4 @@ class AttemptLoginEvent extends SigninEvent {
   final password;
   final NavigationBloc navigationBloc;
   AttemptLoginEvent(this.username, this.password, this.navigationBloc);
-
 }
-

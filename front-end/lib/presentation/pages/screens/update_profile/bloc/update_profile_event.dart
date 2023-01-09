@@ -7,8 +7,7 @@ abstract class UpdateProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadUserProfileEvent extends UpdateProfileEvent {
-}
+class LoadUserProfileEvent extends UpdateProfileEvent {}
 
 class AttemptProfileUpdateEvent extends UpdateProfileEvent {
   final fullName;
@@ -16,5 +15,6 @@ class AttemptProfileUpdateEvent extends UpdateProfileEvent {
   final username;
   final password;
 
-  AttemptProfileUpdateEvent({this.fullName, this.email, this.username, this.password});
+  AttemptProfileUpdateEvent(
+      {this.fullName, this.email, this.username, this.password});
 }

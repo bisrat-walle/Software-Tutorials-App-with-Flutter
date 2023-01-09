@@ -8,7 +8,6 @@ import 'package:softwaretutorials/presentation/pages/screens/project_submission/
 import 'package:softwaretutorials/presentation/pages/screens/tutorial/bloc/tutorial_bloc.dart';
 
 class TutorialDetailScreen extends StatefulWidget {
-
   TutorialDetailScreen({Key? key}) : super(key: key);
 
   @override
@@ -33,37 +32,38 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
   }
 
   Widget getButtons() {
-      return Row(
-        children: [
-          ElevatedButton(
-      child: const FittedBox(
-        child: Text("Update"),
-      ),
-      onPressed: () async {
-        if (_projectForm.formKey.currentState!.validate()) {
-          projectBloc.add(ProjectUpdate(_projectForm.tutorial.tutorialId!, _projectForm.projectLinkController.text));
-        }
-      },
-      style: ElevatedButton.styleFrom(
-          primary: Colors.blue,
-          textStyle: TextStyle(color: Colors.white),
-          splashFactory: InkSplash.splashFactory),
-    ),
-          const SizedBox(
-            width: 10,
+    return Row(
+      children: [
+        ElevatedButton(
+          child: const FittedBox(
+            child: Text("Update"),
           ),
-          IconButton(
-              onPressed: () {
-                projectBloc.add(ProjectDelete(_projectForm.tutorial.tutorialId!));
-              },
-              icon: const Icon(
-                Icons.delete,
-                color: Colors.red,
-              )),
-        ],
-      );
-    }
-  
+          onPressed: () async {
+            if (_projectForm.formKey.currentState!.validate()) {
+              projectBloc.add(ProjectUpdate(_projectForm.tutorial.tutorialId!,
+                  _projectForm.projectLinkController.text));
+            }
+          },
+          style: ElevatedButton.styleFrom(
+              primary: Colors.blue,
+              textStyle: TextStyle(color: Colors.white),
+              splashFactory: InkSplash.splashFactory),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        IconButton(
+            onPressed: () {
+              projectBloc.add(ProjectDelete(_projectForm.tutorial.tutorialId!));
+            },
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+            )),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     projectBloc = BlocProvider.of<ProjectBloc>(context);
@@ -78,7 +78,7 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
         if (state is TutorialFetching || projectBloc.state.tutorial == null)
           return Center(child: CircularProgressIndicator());
         final tutorial = projectBloc.state.tutorial!;
-        if (tutorial.submittedLink == null){
+        if (tutorial.submittedLink == null) {
           _projectForm = ProjectFormModel.fromTutorial(tutorial);
         } else {
           _projectForm = ProjectFormModel.fromTutorial(tutorial);
@@ -122,10 +122,14 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                               child: Column(
                                 children: [
                                   Text("Enjoy your tutorial!",
-                                      style:
-                                          Theme.of(context).textTheme.headline2),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline2),
                                   if (prefs!.get("role") == "CLIENT")
-                                  Text("Scroll down to the bottom to see and submit, edit, update or delete project", textAlign: TextAlign.center,)
+                                    Text(
+                                      "Scroll down to the bottom to see and submit, edit, update or delete project",
+                                      textAlign: TextAlign.center,
+                                    )
                                 ],
                               )),
                           Text(projectBloc.state.tutorial!.content!),
@@ -146,7 +150,8 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                               Container(
                                 width: double.infinity,
                                 margin: EdgeInsets.only(bottom: 10),
-                                child: Text(projectBloc.state.tutorial!.project!.title!,
+                                child: Text(
+                                    projectBloc.state.tutorial!.project!.title!,
                                     style:
                                         Theme.of(context).textTheme.headline2),
                                 decoration: BoxDecoration(
@@ -156,7 +161,8 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                                           color: Colors.black.withOpacity(.1))),
                                 ),
                               ),
-                              Text(projectBloc.state.tutorial!.project!.problemStatement!),
+                              Text(projectBloc
+                                  .state.tutorial!.project!.problemStatement!),
                               SizedBox(height: 20),
                               if (isClient!)
                                 Container(
@@ -183,8 +189,8 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                                           child: Form(
                                             key: _projectForm.formKey,
                                             child: TextFormField(
-                                              controller:
-                                                  _projectForm.projectLinkController,
+                                              controller: _projectForm
+                                                  .projectLinkController,
                                               validator: (value) {
                                                 if (value!.isEmpty ||
                                                     value == null ||
@@ -222,32 +228,41 @@ class _TutorialDetailScreenState extends State<TutorialDetailScreen> {
                                           ),
                                         ),
                                         Container(
-                                            child: tutorial
-                                                        .submittedLink ==
+                                            child: tutorial.submittedLink ==
                                                     null
                                                 ? ElevatedButton(
                                                     child: FittedBox(
-                                                      child: state is ProjectSubmissionLoading ? const Text("submitting ... ") : Text("submit"),
+                                                      child: state
+                                                              is ProjectSubmissionLoading
+                                                          ? const Text(
+                                                              "submitting ... ")
+                                                          : Text("submit"),
                                                     ),
                                                     onPressed: () async {
-                                                      if (_projectForm.formKey
-                                                          .currentState!
+                                                      if (_projectForm
+                                                          .formKey.currentState!
                                                           .validate()) {
-                                                        projectBloc
-                                                            .add(ProjectCreation(
+                                                        projectBloc.add(
+                                                            ProjectCreation(
                                                                 tutorial
                                                                     .tutorialId!,
-                                                                _projectForm.projectLinkController
+                                                                _projectForm
+                                                                    .projectLinkController
                                                                     .text));
-                                                        tutorialBloc.add(GotoTutorialDetailEvent(tutorial, tutorialBloc.state.selectedTab));
+                                                        tutorialBloc.add(
+                                                            GotoTutorialDetailEvent(
+                                                                tutorial,
+                                                                tutorialBloc
+                                                                    .state
+                                                                    .selectedTab));
                                                       }
-                                                      
                                                     },
                                                     style: ElevatedButton.styleFrom(
                                                         primary: Colors.blue,
-                                                        textStyle: const TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                        textStyle:
+                                                            const TextStyle(
+                                                                color: Colors
+                                                                    .white),
                                                         splashFactory: InkSplash
                                                             .splashFactory),
                                                   )

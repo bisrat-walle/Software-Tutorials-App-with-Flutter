@@ -14,5 +14,6 @@ class AttemptSignupEvent extends SignupEvent {
   final password;
   final role;
 
-  AttemptSignupEvent({this.fullName, this.email, this.username, this.password, this.role});
+  AttemptSignupEvent(
+      {this.fullName, this.email, this.username, this.password, this.role});
 }

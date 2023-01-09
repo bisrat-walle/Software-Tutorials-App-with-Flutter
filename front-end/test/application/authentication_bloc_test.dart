@@ -12,41 +12,38 @@ import 'authentication_bloc_test.mocks.dart';
 
 @GenerateMocks([AuthenticationRepository])
 void main() {
-
   SharedPreferences.setMockInitialValues({});
-	late SharedPreferences mockSharedPreferences;
-	final mockAuthenticationRepository = MockAuthenticationRepository();
+  late SharedPreferences mockSharedPreferences;
+  final mockAuthenticationRepository = MockAuthenticationRepository();
 
-	group('AuthenticationBloc', () {
-
-    setUp(() async {
-       mockSharedPreferences =  await SharedPreferences.getInstance();
-    },);
+  group('AuthenticationBloc', () {
+    setUp(
+      () async {
+        mockSharedPreferences = await SharedPreferences.getInstance();
+      },
+    );
     blocTest<AuthenticationBloc, AuthenticationState>(
       'emits [Loading, Authenticated] when user has already been authenticated',
-     setUp:() {
-	 
-		 when(mockAuthenticationRepository
-              .getLoginStatus())
-          .thenAnswer((_) async => Future.value(true));
-       
-     },
-      build: () => AuthenticationBloc(mockSharedPreferences, mockAuthenticationRepository)..add(AuthenticationInitialEvent()),
+      setUp: () {
+        when(mockAuthenticationRepository.getLoginStatus())
+            .thenAnswer((_) async => Future.value(true));
+      },
+      build: () => AuthenticationBloc(
+          mockSharedPreferences, mockAuthenticationRepository)
+        ..add(AuthenticationInitialEvent()),
       expect: () => [Loading(), Authenticated()],
     );
-	
-	blocTest<AuthenticationBloc, AuthenticationState>(
+
+    blocTest<AuthenticationBloc, AuthenticationState>(
       'emits [Loading, UnAuthenticated] when user has not been authenticated',
-     setUp:() {
-	 
-		 when(mockAuthenticationRepository
-              .getLoginStatus())
-          .thenAnswer((_) async => Future.value(false));
-       
-     },
-      build: () => AuthenticationBloc(mockSharedPreferences, mockAuthenticationRepository)..add(AuthenticationInitialEvent()),
+      setUp: () {
+        when(mockAuthenticationRepository.getLoginStatus())
+            .thenAnswer((_) async => Future.value(false));
+      },
+      build: () => AuthenticationBloc(
+          mockSharedPreferences, mockAuthenticationRepository)
+        ..add(AuthenticationInitialEvent()),
       expect: () => [Loading(), UnAuthenticated()],
     );
-	});
-
+  });
 }

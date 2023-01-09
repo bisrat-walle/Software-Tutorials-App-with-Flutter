@@ -3,9 +3,8 @@ part of 'manageuser_bloc.dart';
 abstract class ManageuserState extends Equatable {
   ManageuserState();
 
-  
   List<User> userList = [];
-  
+
   @override
   List<Object> get props => [];
 }
@@ -13,7 +12,6 @@ abstract class ManageuserState extends Equatable {
 class ManageuserInitial extends ManageuserState {}
 
 class ManageuserLoading extends ManageuserState {}
-
 
 class ManageUserLoading extends ManageuserState {}
 

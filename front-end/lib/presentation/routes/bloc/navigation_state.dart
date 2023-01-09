@@ -1,11 +1,11 @@
 part of 'navigation_bloc.dart';
 
-abstract class NavigationState extends Equatable{
+abstract class NavigationState extends Equatable {
   NavigationState();
 }
 
 class NavigationInitial extends NavigationState {
-String toString() {
+  String toString() {
     return "Initial state";
   }
 
@@ -14,17 +14,17 @@ String toString() {
 }
 
 class UpdateProfilePage extends NavigationState {
-String toString() {
+  String toString() {
     return "Initial state";
   }
 
- @override
+  @override
   List<Object?> get props => [];
 }
 
 class SplashState extends NavigationState {
-@override
-String toString() {
+  @override
+  String toString() {
     return "splash state";
   }
 
@@ -33,8 +33,8 @@ String toString() {
 }
 
 class SigninPage extends NavigationState {
-@override
-String toString() {
+  @override
+  String toString() {
     return "signin state";
   }
 
@@ -43,8 +43,8 @@ String toString() {
 }
 
 class SignupPage extends NavigationState {
-@override
-String toString() {
+  @override
+  String toString() {
     return "signup state";
   }
 
@@ -53,8 +53,8 @@ String toString() {
 }
 
 class AllTutorialsPage extends NavigationState {
-@override
-String toString() {
+  @override
+  String toString() {
     return "all tutorials state";
   }
 
@@ -65,16 +65,16 @@ String toString() {
 class EnrolledTutorialsPage extends NavigationState {
   @override
   String toString() {
-      return "enrolled tutorials";
-    }
+    return "enrolled tutorials";
+  }
 
-    @override
+  @override
   List<Object?> get props => [];
 }
 
 class MyTutorialsPage extends NavigationState {
-@override
-String toString() {
+  @override
+  String toString() {
     return "my tutorials state";
   }
 

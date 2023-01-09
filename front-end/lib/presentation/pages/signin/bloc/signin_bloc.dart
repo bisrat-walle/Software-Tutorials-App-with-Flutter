@@ -9,16 +9,17 @@ part 'signin_event.dart';
 part 'signin_state.dart';
 
 class SigninBloc extends Bloc<SigninEvent, SigninState> {
-
   final AuthenticationBloc authenticationBloc;
   final AuthenticationRepository authenticationRepository;
 
-  SigninBloc(this.authenticationBloc, this.authenticationRepository) : super(SigninInit()) {
+  SigninBloc(this.authenticationBloc, this.authenticationRepository)
+      : super(SigninInit()) {
     on<AttemptLoginEvent>(
       (event, emit) async {
         emit(Loading());
-        final res = await authenticationRepository.authenticateUser(username:event.username, password:event.password);
-        if (res){
+        final res = await authenticationRepository.authenticateUser(
+            username: event.username, password: event.password);
+        if (res) {
           print("Authentication Success");
           event.navigationBloc.add(GotoAllTutorials());
         } else {
@@ -28,14 +29,14 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
       },
     );
     on<NormalEvent>((event, emit) async {
+      emit(Loading());
+      final res = await authenticationRepository.getLoginStatus();
+      if (res) {
         emit(Loading());
-        final res = await authenticationRepository.getLoginStatus();
-        if (res){
-          emit(Loading());
-          emit(SigninSuccess());
-        } else {
-          emit(Normal());
-        }
+        emit(SigninSuccess());
+      } else {
+        emit(Normal());
+      }
     });
   }
 }

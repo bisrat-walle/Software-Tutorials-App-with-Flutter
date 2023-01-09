@@ -8,20 +8,16 @@ class ProjectFormModel {
 
   ProjectFormModel(this.formKey, this.tutorial, this.projectLinkController);
 
-  factory ProjectFormModel.fromTutorial(Tutorial tutorial){
+  factory ProjectFormModel.fromTutorial(Tutorial tutorial) {
     if (tutorial.submittedLink == null) {
       return ProjectFormModel(
-      GlobalKey<FormState>(),
-      tutorial,
-      TextEditingController());
+          GlobalKey<FormState>(), tutorial, TextEditingController());
     }
-    return ProjectFormModel(
-      GlobalKey<FormState>(),
-      tutorial,
-      TextEditingController(text: tutorial.submittedLink!));
+    return ProjectFormModel(GlobalKey<FormState>(), tutorial,
+        TextEditingController(text: tutorial.submittedLink!));
   }
 
-  void dispose(){
+  void dispose() {
     projectLinkController.dispose();
   }
 }

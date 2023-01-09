@@ -9,7 +9,6 @@ final userTable = 'user';
 final tutorialId = "tutorialId";
 final userId = "id";
 
-
 class LocalDataProvider {
   static final LocalDataProvider dbProvider = LocalDataProvider();
   static Database? _database;
@@ -18,16 +17,15 @@ class LocalDataProvider {
     _database = await createDatabase();
     return _database!;
   }
+
   createDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "tutorial1.db");
     Sqflite.setDebugModeOn(true);
-    var database = await openDatabase(path,
-        version: 1, onCreate: initDB);
+    var database = await openDatabase(path, version: 1, onCreate: initDB);
     return database;
   }
-        
-        
+
   void initDB(Database database, int version) async {
     await database.execute("CREATE TABLE $tutorialTable ("
         "$tutorialId INTEGER PRIMARY KEY, "

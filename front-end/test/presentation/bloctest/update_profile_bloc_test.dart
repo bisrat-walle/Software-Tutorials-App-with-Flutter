@@ -6,30 +6,40 @@ import 'package:test/test.dart';
 
 import 'tutorial_bloc_test.mocks.dart';
 
-final User user = User(id: 1, email: "b@b.com", fullName: "name", 
-  password: "skjfd", role: "CLIENT", username: "username");
+final User user = User(
+    id: 1,
+    email: "b@b.com",
+    fullName: "name",
+    password: "skjfd",
+    role: "CLIENT",
+    username: "username");
 
 void main() {
   final mockProfileRepository = MockProfileRepository();
-   group('UpdateProfileBloc', () {
-	blocTest<UpdateProfileBloc, UpdateProfileState>(
+  group('UpdateProfileBloc', () {
+    blocTest<UpdateProfileBloc, UpdateProfileState>(
       'emits [UserProfileLoadingState(), UserProfileLoadedState(user)] when LoadUserProfileEvent is added and becomes successfull',
-     setUp:() {
-       when(mockProfileRepository.getUserProfile()).thenAnswer((_) => Future.value(user));
-     },
-      build: () => UpdateProfileBloc(mockProfileRepository)..add(LoadUserProfileEvent()),
+      setUp: () {
+        when(mockProfileRepository.getUserProfile())
+            .thenAnswer((_) => Future.value(user));
+      },
+      build: () =>
+          UpdateProfileBloc(mockProfileRepository)..add(LoadUserProfileEvent()),
       expect: () => [UserProfileLoadingState(), UserProfileLoadedState(user)],
     );
-	
-	blocTest<UpdateProfileBloc, UpdateProfileState>(
-      'emits [UserProfileLoadingState(), UpdateProfileErrorState()] when LoadUserProfileEvent is added and fails',
-     setUp:() {
-       when(mockProfileRepository.getUserProfile()).thenAnswer((_) => Future.value(null));
-     },
-      build: () => UpdateProfileBloc(mockProfileRepository)..add(LoadUserProfileEvent()),
-      expect: () => [UserProfileLoadingState(), UpdateProfileErrorState("Unable to fetch user profile")],
-    );
-	
-});
-}
 
+    blocTest<UpdateProfileBloc, UpdateProfileState>(
+      'emits [UserProfileLoadingState(), UpdateProfileErrorState()] when LoadUserProfileEvent is added and fails',
+      setUp: () {
+        when(mockProfileRepository.getUserProfile())
+            .thenAnswer((_) => Future.value(null));
+      },
+      build: () =>
+          UpdateProfileBloc(mockProfileRepository)..add(LoadUserProfileEvent()),
+      expect: () => [
+        UserProfileLoadingState(),
+        UpdateProfileErrorState("Unable to fetch user profile")
+      ],
+    );
+  });
+}

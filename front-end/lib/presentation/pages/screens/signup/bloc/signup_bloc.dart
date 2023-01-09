@@ -17,9 +17,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         fullName: event.fullName,
         role: event.role,
         username: event.username,
-
       );
-      if (res.success){
+      if (res.success) {
         emit(SignupCompletedState());
       } else {
         emit(SignupErrorState(res.error));

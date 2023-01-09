@@ -6,10 +6,11 @@ import 'local_data_provider.dart';
 
 class TutorialLocalRepository {
   final dbProvider = LocalDataProvider.dbProvider;
-  
+
   Future<int> createTutorial(Tutorial tutorial) async {
     final db = await dbProvider.database;
-    var result = db.insert(tutorialTable, tutorial.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
+    var result = db.insert(tutorialTable, tutorial.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return result;
   }
 
@@ -23,7 +24,6 @@ class TutorialLocalRepository {
     return tutorials;
   }
 
-  
   Future<int> updateTutorial(Tutorial tutorial) async {
     final db = await dbProvider.database;
 
@@ -43,24 +43,25 @@ class TutorialLocalRepository {
 
   Future<int> submitProject(Tutorial tutorial) async {
     final db = await dbProvider.database;
-    print(tutorial.submittedLink.toString()+"====================");
+    print(tutorial.submittedLink.toString() + "====================");
     var result = await db.update(tutorialTable, tutorial.toJson(),
         where: "tutorialId = ?", whereArgs: [tutorial.tutorialId]);
 
     return result;
   }
 
-  
   Future<int> deleteTutorial(int tutorialId) async {
     final db = await dbProvider.database;
-    var result = await db.delete(tutorialTable, where: 'tutorialId = ?', whereArgs: [tutorialId]);
+    var result = await db.delete(tutorialTable,
+        where: 'tutorialId = ?', whereArgs: [tutorialId]);
 
     return result;
   }
 
   Future<Tutorial> getTutorial(int tutorialId) async {
     final db = await dbProvider.database;
-    var result = await db.query(tutorialTable, where: 'tutorialId = ?', whereArgs: [tutorialId]);
+    var result = await db
+        .query(tutorialTable, where: 'tutorialId = ?', whereArgs: [tutorialId]);
 
     return Tutorial.fromSqliteJson(result.first);
   }

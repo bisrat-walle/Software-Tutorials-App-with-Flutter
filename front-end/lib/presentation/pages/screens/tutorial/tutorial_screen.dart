@@ -23,11 +23,15 @@ class TutorialScreen extends StatelessWidget {
         BlocProvider.of<AuthenticationBloc>(context).preferences;
     final _navigatorBloc = BlocProvider.of<NavigationBloc>(context);
     final username = prefs.get("username");
-    final tutorialRepository = RepositoryProvider.of<TutorialRepository>(context);
+    final tutorialRepository =
+        RepositoryProvider.of<TutorialRepository>(context);
     final projectRepository = RepositoryProvider.of<ProjectRepository>(context);
-    final enrollementRepository = RepositoryProvider.of<EnrollementRepository>(context);
-    final tutorialLocalRepository = RepositoryProvider.of<TutorialLocalRepository>(context);
-    final _tutorialBloc = TutorialBloc(tutorialRepository, tutorialLocalRepository, enrollementRepository);
+    final enrollementRepository =
+        RepositoryProvider.of<EnrollementRepository>(context);
+    final tutorialLocalRepository =
+        RepositoryProvider.of<TutorialLocalRepository>(context);
+    final _tutorialBloc = TutorialBloc(
+        tutorialRepository, tutorialLocalRepository, enrollementRepository);
     _tutorialBloc.add(LoadAllTutorials(0));
     final role = prefs.get("role");
     return BlocProvider<TutorialBloc>(
@@ -135,9 +139,10 @@ class TutorialScreen extends StatelessWidget {
 
                 if (state is TutorialDetailState) {
                   return BlocProvider(
-                    create: (context) => ProjectBloc(tutorialRepository, projectRepository)..add(LoadTutorialEvent(state.tutorial.tutorialId)),
-                    child: TutorialDetailScreen(
-                    ),
+                    create: (context) =>
+                        ProjectBloc(tutorialRepository, projectRepository)
+                          ..add(LoadTutorialEvent(state.tutorial.tutorialId)),
+                    child: TutorialDetailScreen(),
                   );
                 }
 

@@ -19,55 +19,68 @@ import 'package:softwaretutorials/presentation/routes/bloc_observer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final SharedPreferences sharedPreferences = await SharedPreferences.getInstance(); // for storing role and token
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance(); // for storing role and token
   BlocOverrides.runZoned(
-   () {
-     final tutorialLocalRepository = TutorialLocalRepository();
-    final userLocalRepository = UserLocalRepository();
-    final _interceptedClient = InterceptedClient.build(interceptors: [TokenInterceptor()]);
-	final _authenticationRepository = AuthenticationRepository(_interceptedClient, tutorialLocalRepository);
-    final _authenticationBloc = AuthenticationBloc(sharedPreferences, _authenticationRepository);
-    _authenticationBloc.add(AuthenticationInitialEvent());
-    final _navigationBloc = NavigationBloc(_authenticationBloc)..add(NavigationInitialEvent());
-     final _signinBloc = SigninBloc(_authenticationBloc, _authenticationRepository);
-    final _goRouter = TutorialGoRouter.get(_navigationBloc);
+    () {
+      final tutorialLocalRepository = TutorialLocalRepository();
+      final userLocalRepository = UserLocalRepository();
+      final _interceptedClient =
+          InterceptedClient.build(interceptors: [TokenInterceptor()]);
+      final _authenticationRepository =
+          AuthenticationRepository(_interceptedClient, tutorialLocalRepository);
+      final _authenticationBloc =
+          AuthenticationBloc(sharedPreferences, _authenticationRepository);
+      _authenticationBloc.add(AuthenticationInitialEvent());
+      final _navigationBloc = NavigationBloc(_authenticationBloc)
+        ..add(NavigationInitialEvent());
+      final _signinBloc =
+          SigninBloc(_authenticationBloc, _authenticationRepository);
+      final _goRouter = TutorialGoRouter.get(_navigationBloc);
 
-    
-
-
-     runApp(
-      MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<TutorialLocalRepository>(create: (context) => tutorialLocalRepository),
-        RepositoryProvider<UserLocalRepository>(create: (context) => userLocalRepository),
-        RepositoryProvider<ProfileRepository>(create: (context) => ProfileRepository(_interceptedClient, userLocalRepository)),
-        RepositoryProvider<TutorialRepository>(create: (context) => TutorialRepository(_interceptedClient, tutorialLocalRepository)),
-		    RepositoryProvider<ProjectRepository>(create: (context) => ProjectRepository(_interceptedClient, tutorialLocalRepository)),
-        RepositoryProvider<AuthenticationRepository>(create: (context) => _authenticationRepository),
-        RepositoryProvider<EnrollementRepository>(create: (context) => EnrollementRepository(_interceptedClient, tutorialLocalRepository)),
-      ],
-      child: MultiBlocProvider(
+      runApp(MultiRepositoryProvider(
         providers: [
-          BlocProvider<AuthenticationBloc>(
-            create: (context) => _authenticationBloc,
-          ),
-          BlocProvider<SigninBloc>(
-            create: (context) => _signinBloc,
-          ),
-          BlocProvider<NavigationBloc>(
-            create: (context) => _navigationBloc,
-          ),
+          RepositoryProvider<TutorialLocalRepository>(
+              create: (context) => tutorialLocalRepository),
+          RepositoryProvider<UserLocalRepository>(
+              create: (context) => userLocalRepository),
+          RepositoryProvider<ProfileRepository>(
+              create: (context) =>
+                  ProfileRepository(_interceptedClient, userLocalRepository)),
+          RepositoryProvider<TutorialRepository>(
+              create: (context) => TutorialRepository(
+                  _interceptedClient, tutorialLocalRepository)),
+          RepositoryProvider<ProjectRepository>(
+              create: (context) => ProjectRepository(
+                  _interceptedClient, tutorialLocalRepository)),
+          RepositoryProvider<AuthenticationRepository>(
+              create: (context) => _authenticationRepository),
+          RepositoryProvider<EnrollementRepository>(
+              create: (context) => EnrollementRepository(
+                  _interceptedClient, tutorialLocalRepository)),
         ],
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          title: 'Ethio Software Tutorials',
-          theme: lightTheme(),
-          routeInformationParser: _goRouter.routeInformationParser,
-          routerDelegate: _goRouter.routerDelegate,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthenticationBloc>(
+              create: (context) => _authenticationBloc,
+            ),
+            BlocProvider<SigninBloc>(
+              create: (context) => _signinBloc,
+            ),
+            BlocProvider<NavigationBloc>(
+              create: (context) => _navigationBloc,
+            ),
+          ],
+          child: MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: 'Ethio Software Tutorials',
+            theme: lightTheme(),
+            routeInformationParser: _goRouter.routeInformationParser,
+            routerDelegate: _goRouter.routerDelegate,
+          ),
         ),
-      ),
-    ));
-   },
-   blocObserver: NavigationBlocObserver(),
- );
+      ));
+    },
+    blocObserver: NavigationBlocObserver(),
+  );
 }

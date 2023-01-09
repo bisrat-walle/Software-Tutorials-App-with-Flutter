@@ -5,20 +5,19 @@ import 'package:softwaretutorials/application/auth/authentication/bloc/authentic
 part 'navigation_event.dart';
 part 'navigation_state.dart';
 
-class NavigationBloc extends Bloc<NavigationEvent, NavigationState>{
+class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   final AuthenticationBloc authenticationBloc;
   NavigationBloc(this.authenticationBloc) : super(NavigationInitial()) {
     on<NavigationInitialEvent>(
-        (event, emit) async {
-          emit(SplashState());
+      (event, emit) async {
+        emit(SplashState());
         await Future.delayed(const Duration(seconds: 2));
-        if (authenticationBloc.state is Authenticated){
+        if (authenticationBloc.state is Authenticated) {
           emit(AllTutorialsPage());
         } else {
           emit(SigninPage());
         }
-        },
-
+      },
     );
     on<GotoUpdateProfileState>(
       (event, emit) {
@@ -40,13 +39,11 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState>{
         emit(AllTutorialsPage());
       },
     );
-    on<GotoMyTutorials>(
-      (event, emit){
-        emit(MyTutorialsPage());
+    on<GotoMyTutorials>((event, emit) {
+      emit(MyTutorialsPage());
     });
-    on<GotoEnrolledTutorials>(
-      (event, emit){
-        emit(EnrolledTutorialsPage());
+    on<GotoEnrolledTutorials>((event, emit) {
+      emit(EnrolledTutorialsPage());
     });
   }
 }

@@ -1,6 +1,6 @@
 part of 'authentication_bloc.dart';
 
-abstract class AuthenticationState extends Equatable  {
+abstract class AuthenticationState extends Equatable {
   const AuthenticationState();
 }
 
